@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'pages/home_page.dart';
-import 'pages/profile_page.dart';
+// import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
+
+import 'home_page.dart';
+import 'profile_page.dart';
+import 'assets.dart';
+import 'plan_diet_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,15 +18,101 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Nutri Guide',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 125, 167, 255)),
-        useMaterial3: true,
+    return ChangeNotifierProvider(
+      create: (context) => MyAppState(),
+      child: MaterialApp(
+        title: 'NutriMithu',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color.fromARGB(255, 125, 167, 255)),
+          useMaterial3: true,
+        ),
+        home: const MyHomePage(),
       ),
-      home: const MyHomePage(),
     );
+  }
+}
+
+class MyAppState extends ChangeNotifier {
+  var measureUnit = "none";
+  var units = <bool>[false, false, false];
+  var recCal = "1800";
+  var total = "1000";
+  var mealCals = <double>[0, 0, 0, 0, 0];
+  var breakfast = <String>{}.toSet();
+  var snack1 = <String>{}.toSet();
+  var lunch = <String>{}.toSet();
+  var snack2 = <String>{}.toSet();
+  var dinner = <String>{}.toSet();
+  final ValueNotifier<double> snack1Portion = ValueNotifier<double>(0.0);
+  final ValueNotifier<double> lunchPortion = ValueNotifier<double>(0.0);
+  final ValueNotifier<double> snack2Portion = ValueNotifier<double>(0.0);
+  final ValueNotifier<double> dinnerPortion = ValueNotifier<double>(0.0);
+  final ValueNotifier<double> breakfastPortion = ValueNotifier<double>(0.0);
+
+  var name = 'Helena Hills'; //get from database
+  var email = 'name@domain.com'; //get from database
+  var username = '@helenahills'; //get from database
+  var profilepic = ''; //get from database
+  var sex = 'Female'; //get from database
+  var vegetarian = 'Vegetarian'; //get from database
+  var dateOfBirth = DateTime(1990, 1, 1);
+  var height = 170.0;
+  var heightUnit = 'none';
+  var heightInCm = true;
+  var weight = 60.0;
+  var allergies = 'none';
+  var bmi = 20.76;
+  var bmiCategory = 'Normal Weight';
+  var weightToLose = 2;
+  var eer = 20;
+  var weightLossGoal = 10;
+  var protienPerDay = 50;
+
+  void getUnit(String unit) {
+    measureUnit = unit;
+    switch (unit) {
+      case "Calories":
+        units = [true, false, false];
+        break;
+      case "Cups":
+        units = [false, true, false];
+        break;
+      case "Grams":
+        units = [false, false, true];
+        break;
+      default:
+        units = [false, false, false];
+    }
+    notifyListeners();
+  }
+
+  void getHeightUnit(String unit) {
+    heightUnit = unit;
+    if (unit == "cm") {
+      heightInCm = true;
+    } else {
+      heightInCm = false;
+    }
+    notifyListeners();
+  }
+
+  void getTotal() {
+    double tot = 0;
+    for (int i = 0; i < 5; i++) {
+      tot += mealCals[i];
+    }
+    total = tot.toString();
+    notifyListeners();
+  }
+
+  void printMeal(String list) {
+    print(list[0]);
+    notifyListeners();
+  }
+
+  void changeProfilePicture() {
+    // Implement logic to change the profile picture
   }
 }
 
@@ -42,7 +134,7 @@ class _MyHomePageState extends State<MyHomePage> {
   ];
 
   final List<String> _titles = [
-    'Nutri Guide',
+    'NutriMithu',
     'Plan Diet',
     'Calorie Diary',
     'Profile',
@@ -53,26 +145,12 @@ class _MyHomePageState extends State<MyHomePage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        elevation: 2.0,
+        elevation: 1.0,
         shadowColor: Colors.grey.shade400, // Set the shadow color
         surfaceTintColor: Colors.white,
         // centerTitle: true,
-        title: Padding(
-          padding: const EdgeInsets.only(left: 16.0),
-          child: Text(
-            _titles[_currentIndex],
-          ),
-        ),
-
-        // actions: [
-        //   IconButton(
-        //     icon: const Icon(Icons.arrow_back),
-        //     onPressed: () {
-        //       // Navigate back
-        //       Navigator.of(context).pop();
-        //     },
-        //   ),
-        // ],
+        title: Text(_titles[_currentIndex],
+            style: const TextStyle(color: Colors.grey)),
       ),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -110,15 +188,20 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 }
 
-class PlanDietPage extends StatelessWidget {
-  const PlanDietPage({super.key});
+class HomePage extends HomePageGenerator {
+  const HomePage({super.key});
+}
 
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('Plan Diet')),
-    );
-  }
+class PlanDietPage extends PlanDietPageGenerator {
+  const PlanDietPage({super.key});
+}
+
+class GenerateMealPlanPage extends GenerateMealPlanPageGenerator {
+  const GenerateMealPlanPage({super.key});
+}
+
+class CustomMealPlanPage extends CustomMealPlanPageGenerator {
+  const CustomMealPlanPage({super.key});
 }
 
 class CalorieDiaryPage extends StatelessWidget {
@@ -130,4 +213,8 @@ class CalorieDiaryPage extends StatelessWidget {
       body: Center(child: Text('Calorie Diary')),
     );
   }
+}
+
+class ProfilePage extends ProfilePageGenerator {
+  const ProfilePage({super.key});
 }
