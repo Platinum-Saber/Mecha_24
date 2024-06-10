@@ -61,13 +61,18 @@ class MyAppState extends ChangeNotifier {
   var heightUnit = 'none';
   var heightInCm = true;
   var weight = 60.0;
-  var allergies = 'none';
+  var allergies = 'None';
   var bmi = 20.76;
   var bmiCategory = 'Normal Weight';
-  var weightToLose = 2;
+  // var weightToLose = 2;
   var eer = 20;
   var weightLossGoal = 10;
+  var weightLossRate = 500;
   var protienPerDay = 50;
+  var srilankan = 'Sri Lankan';
+  var activityLevel = 'Moderate';
+  var maintainWeight = false;
+  var currentCalorieIntake = 1800;
 
   void getUnit(String unit) {
     measureUnit = unit;

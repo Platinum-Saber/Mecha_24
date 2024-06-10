@@ -159,7 +159,7 @@ class HomePageGenerator extends StatelessWidget {
                 width: 400,
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                    'BMI represents how much you weigh for your given height.\n\nSince your Asian by descent your BMI shows that you are ${apps.bmiCategory}.\n\nYou have to lose a minimum of ${apps.weightToLose} kg to achieve a normal BMI. \n\nminimum is calculated by 22.9 x height^2 according to current guidlines.'),
+                    'BMI represents how much you weigh for your given height.\n\nSince your Asian by descent your BMI shows that you are ${apps.bmiCategory}.\n\nYou have to lose a minimum of ${apps.weightLossGoal} kg to achieve a normal BMI. \n\nminimum is calculated by 22.9 x height^2 according to current guidlines.'),
               ),
             ],
           ),
@@ -195,7 +195,7 @@ class HomePageGenerator extends StatelessWidget {
                 width: 400,
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                    'Your goal is to lose ${apps.weightLossGoal} kg.\n\nThis is a healthy goal and can be achieved by losing 0.5 kg per week.\n\nThis will help you maintain a healthy lifestyle and keep you fit.'),
+                    'Your goal is to lose ${apps.weightLossGoal} kg.\n\nThis is a healthy goal and can be achieved by losing ${apps.weightLossRate} kg per week.\n\nThis will help you maintain a healthy lifestyle and keep you fit.'),
               ),
             ],
           ),

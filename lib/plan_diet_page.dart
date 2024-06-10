@@ -10,73 +10,75 @@ class PlanDietPageGenerator extends StatelessWidget {
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     return Scaffold(
-      body: Center(
-          child: Column(
-        children: <Widget>[
-          const SizedBox(height: 100.0),
-          Padding(
-            padding: const EdgeInsets.all(2),
-            child: BigCard(
-              text_: appState.recCal,
+      body: SingleChildScrollView(
+        child: Center(
+            child: Column(
+          children: <Widget>[
+            const SizedBox(height: 50.0),
+            Padding(
+              padding: const EdgeInsets.all(2),
+              child: BigCard(
+                text_: appState.recCal,
+              ),
             ),
-          ),
-          const Text(
-            "Recommended",
-            style: TextStyle(fontSize: 12),
-          ),
-          const SizedBox(height: 100.0),
-          Padding(
-            padding: const EdgeInsets.all(3.0),
-            child: CustomElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const CustomMealPlanPage()),
-                );
-              },
-              buttonText: "",
-              image: '3',
+            const Text(
+              "Recommended",
+              style: TextStyle(fontSize: 12),
             ),
-          ),
-          const Text(
-            "Custom",
-            style: TextStyle(fontSize: 16),
-          ),
-          const SizedBox(height: 30.0),
-          Padding(
-            padding: const EdgeInsets.all(3.0),
-            child: CustomElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const GenerateMealPlanPage()),
-                );
-              },
-              buttonText: "",
-              image: '10',
+            const SizedBox(height: 50.0),
+            Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: CustomElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const CustomMealPlanPage()),
+                  );
+                },
+                buttonText: "",
+                image: '3',
+              ),
             ),
-          ),
-          const Text(
-            "Generate",
-            style: TextStyle(fontSize: 16),
-          ),
-          const SizedBox(height: 30.0),
-          Padding(
-            padding: const EdgeInsets.all(3.0),
-            child: CustomElevatedButton(
-              onPressed: () {},
-              buttonText: "",
-              image: '1',
+            const Text(
+              "Custom",
+              style: TextStyle(fontSize: 16),
             ),
-          ),
-          const Text(
-            "Prescription",
-            style: TextStyle(fontSize: 16),
-          ),
-        ],
-      )),
+            const SizedBox(height: 30.0),
+            Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: CustomElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const GenerateMealPlanPage()),
+                  );
+                },
+                buttonText: "",
+                image: '10',
+              ),
+            ),
+            const Text(
+              "Generate",
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 30.0),
+            Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: CustomElevatedButton(
+                onPressed: () {},
+                buttonText: "",
+                image: '1',
+              ),
+            ),
+            const Text(
+              "Prescription",
+              style: TextStyle(fontSize: 16),
+            ),
+          ],
+        )),
+      ),
     );
   }
 }
