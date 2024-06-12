@@ -10,75 +10,79 @@ class PlanDietPageGenerator extends StatelessWidget {
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Center(
-            child: Column(
-          children: <Widget>[
-            const SizedBox(height: 50.0),
-            Padding(
-              padding: const EdgeInsets.all(2),
-              child: BigCard(
-                text_: appState.recCal,
-              ),
+      body: Center(
+          child: Column(
+        children: <Widget>[
+          const SizedBox(height: 50.0),
+          Padding(
+            padding: const EdgeInsets.all(2),
+            child: BigCard(
+              text_: appState.recCal,
             ),
-            const Text(
-              "Recommended",
-              style: TextStyle(fontSize: 12),
+          ),
+          const Text(
+            "Recommended",
+            style: TextStyle(fontSize: 12),
+          ),
+          const SizedBox(height: 50.0),
+          Padding(
+            padding: const EdgeInsets.all(3.0),
+            child: CustomElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const CustomMealPlanPage()),
+                );
+              },
+              buttonText: "",
+              image: '3',
             ),
-            const SizedBox(height: 50.0),
-            Padding(
-              padding: const EdgeInsets.all(3.0),
-              child: CustomElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const CustomMealPlanPage()),
-                  );
-                },
-                buttonText: "",
-                image: '3',
-              ),
+          ),
+          const Text(
+            "Custom",
+            style: TextStyle(fontSize: 16),
+          ),
+          const SizedBox(height: 30.0),
+          Padding(
+            padding: const EdgeInsets.all(3.0),
+            child: CustomElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const GenerateMealPlanPage()),
+                );
+              },
+              buttonText: "",
+              image: '10',
             ),
-            const Text(
-              "Custom",
-              style: TextStyle(fontSize: 16),
+          ),
+          const Text(
+            "Generate",
+            style: TextStyle(fontSize: 16),
+          ),
+          const SizedBox(height: 30.0),
+          Padding(
+            padding: const EdgeInsets.all(3.0),
+            child: CustomElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const PrescriptionMealPlanPage()),
+                );
+              },
+              buttonText: "",
+              image: '1',
             ),
-            const SizedBox(height: 30.0),
-            Padding(
-              padding: const EdgeInsets.all(3.0),
-              child: CustomElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const GenerateMealPlanPage()),
-                  );
-                },
-                buttonText: "",
-                image: '10',
-              ),
-            ),
-            const Text(
-              "Generate",
-              style: TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 30.0),
-            Padding(
-              padding: const EdgeInsets.all(3.0),
-              child: CustomElevatedButton(
-                onPressed: () {},
-                buttonText: "",
-                image: '1',
-              ),
-            ),
-            const Text(
-              "Prescription",
-              style: TextStyle(fontSize: 16),
-            ),
-          ],
-        )),
-      ),
+          ),
+          const Text(
+            "Prescription",
+            style: TextStyle(fontSize: 16),
+          ),
+        ],
+      )),
     );
   }
 }
@@ -408,6 +412,159 @@ class _CustomMealPlanPageState extends State<CustomMealPlanPageGenerator> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class PrescriptionMealPlanPageGenerator extends StatefulWidget {
+  const PrescriptionMealPlanPageGenerator({super.key});
+
+  @override
+  _PrescriptionMealPlanPageGenerator createState() =>
+      _PrescriptionMealPlanPageGenerator();
+}
+
+class _PrescriptionMealPlanPageGenerator
+    extends State<PrescriptionMealPlanPageGenerator> {
+  final List<String> foodItems = [
+    'rice',
+    'potato',
+    'bread',
+    'dhal',
+    'eggplant',
+    'bean'
+  ];
+  final List<String> snackItems = ['biscuit', 'cake', 'fruit'];
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var appState = context.watch<MyAppState>();
+    return Scaffold(
+      appBar: const CustomAppBar(title: "Prescription Meal Plan"),
+      body: SingleChildScrollView(
+        child: Column(children: [
+          const SizedBox(height: 30.0),
+          const Center(
+              child: Text(
+            "Tell us what you want to eat.",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          )),
+          const Center(
+              child: Text(
+            "We will recommend the intake.",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          )),
+          const SizedBox(height: 25.0),
+          CustomCalendar(
+            onDaySelected: (selectedDay, focusedDay) {
+              setState(() {});
+            },
+          ),
+          const SizedBox(height: 25.0),
+          Row(mainAxisSize: MainAxisSize.min, children: [
+            UnitButtons(
+              onPressed: () {
+                appState.getUnit("Calories");
+              },
+              buttonText: "Calories",
+              pressed: appState.units[0],
+            ),
+            const SizedBox(width: 20.0),
+            UnitButtons(
+              onPressed: () {
+                appState.getUnit("Cups");
+              },
+              buttonText: "Cups",
+              pressed: appState.units[1],
+            ),
+            const SizedBox(width: 20.0),
+            UnitButtons(
+              onPressed: () {
+                appState.getUnit("Grams");
+              },
+              buttonText: "Grams",
+              pressed: appState.units[2],
+            ),
+          ]),
+          const SizedBox(height: 20.0),
+          CustomExpandingWidgetVer2(
+            listTitle: 'Breakfast',
+            suggestions: foodItems,
+            onChanged: (value) {
+              setState(() {
+                print(appState.dinner);
+              });
+            },
+            units: appState.measureUnit,
+            pairList: appState.breakfastPrescription,
+          ),
+          const SizedBox(height: 20.0),
+          CustomExpandingWidgetVer2(
+            listTitle: 'Snack',
+            suggestions: snackItems,
+            onChanged: (value) {
+              setState(() {
+                print(appState.dinner);
+              });
+            },
+            units: appState.measureUnit,
+            pairList: appState.breakfastPrescription,
+          ),
+          const SizedBox(height: 20.0),
+          CustomExpandingWidgetVer2(
+            listTitle: 'Lunch',
+            suggestions: foodItems,
+            onChanged: (value) {
+              setState(() {
+                print(appState.dinner);
+              });
+            },
+            units: appState.measureUnit,
+            pairList: appState.breakfastPrescription,
+          ),
+          const SizedBox(height: 20.0),
+          CustomExpandingWidgetVer2(
+            listTitle: 'Snack',
+            suggestions: snackItems,
+            onChanged: (value) {
+              setState(() {
+                print(appState.dinner);
+              });
+            },
+            units: appState.measureUnit,
+            pairList: appState.breakfastPrescription,
+          ),
+          const SizedBox(height: 20.0),
+          CustomExpandingWidgetVer2(
+            listTitle: 'Dinner',
+            suggestions: foodItems,
+            onChanged: (value) {
+              setState(() {
+                print(appState.dinner);
+              });
+            },
+            units: appState.measureUnit,
+            pairList: appState.breakfastPrescription,
+          ),
+          const SizedBox(
+            height: 30,
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              onPressed: () {
+                print('Generate custom meal plan');
+              },
+              child: const Text('Done', style: TextStyle(fontSize: 16)),
+            ),
+          ),
+        ]),
       ),
     );
   }

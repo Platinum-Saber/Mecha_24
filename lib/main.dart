@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'home_page.dart';
 import 'profile_page.dart';
 import 'plan_diet_page.dart';
+import 'calorieDiary_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -37,16 +38,22 @@ class MyAppState extends ChangeNotifier {
   var recCal = "1800";
   var total = "1000";
   var mealCals = <double>[0, 0, 0, 0, 0];
+
   var breakfast = <String>{}.toSet();
   var snack1 = <String>{}.toSet();
   var lunch = <String>{}.toSet();
   var snack2 = <String>{}.toSet();
   var dinner = <String>{}.toSet();
+
   final ValueNotifier<double> snack1Portion = ValueNotifier<double>(0.0);
   final ValueNotifier<double> lunchPortion = ValueNotifier<double>(0.0);
   final ValueNotifier<double> snack2Portion = ValueNotifier<double>(0.0);
   final ValueNotifier<double> dinnerPortion = ValueNotifier<double>(0.0);
   final ValueNotifier<double> breakfastPortion = ValueNotifier<double>(0.0);
+
+  final Set<Map<String, double>> breakfastPrescription = {};
+  final Set<Map<String, double>> lunchPrescription = {};
+  final Set<Map<String, double>> dinnerPrescription = {};
 
   var name = 'Helena Hills'; //get from database
   var email = 'name@domain.com'; //get from database
@@ -215,15 +222,12 @@ class CustomMealPlanPage extends CustomMealPlanPageGenerator {
   const CustomMealPlanPage({super.key});
 }
 
-class CalorieDiaryPage extends StatelessWidget {
+class CalorieDiaryPage extends CalorieDiaryPageGenerator {
   const CalorieDiaryPage({super.key});
+}
 
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(child: Text('Calorie Diary')),
-    );
-  }
+class PrescriptionMealPlanPage extends PrescriptionMealPlanPageGenerator {
+  const PrescriptionMealPlanPage({super.key});
 }
 
 class ProfilePage extends ProfilePageGenerator {
