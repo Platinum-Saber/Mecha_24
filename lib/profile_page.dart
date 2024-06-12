@@ -256,6 +256,7 @@ class _ProfilePageState extends State<ProfilePageGenerator> {
             enabled: _isEditing,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
+              suffixText: appState.heightInCm ? 'cm' : 'in',
               labelText: 'Height',
               labelStyle: TextStyle(
                 color: _isEditing ? null : Colors.black,
@@ -314,6 +315,7 @@ class _ProfilePageState extends State<ProfilePageGenerator> {
             enabled: _isEditing,
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
+              suffixText: 'kg',
               labelText: 'Weight in kg',
               labelStyle: TextStyle(
                 color: _isEditing ? null : Colors.black,
@@ -468,6 +470,7 @@ class _ProfilePageState extends State<ProfilePageGenerator> {
       enabled: _isEditing,
       keyboardType: TextInputType.number,
       decoration: InputDecoration(
+        suffixText: 'cal',
         labelText: 'What is your current calorie intake per day?',
         labelStyle: TextStyle(
           color: _isEditing ? null : Colors.black,

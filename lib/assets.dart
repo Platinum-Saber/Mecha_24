@@ -6,54 +6,6 @@ import 'package:table_calendar/table_calendar.dart';
 
 // class
 
-class ChooseMealButton extends StatelessWidget {
-  final String buttonText;
-  final VoidCallback onPressed;
-  final String colorScheme;
-
-  const ChooseMealButton({
-    Key? key,
-    required this.buttonText,
-    required this.onPressed,
-    required this.colorScheme,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    Color bgcolor;
-    Color fgcolor;
-    if (colorScheme == 'blue') {
-      bgcolor = const Color.fromRGBO(235, 242, 255, 1);
-      fgcolor = const Color.fromRGBO(53, 122, 246, 1);
-    } else if (colorScheme == 'green') {
-      bgcolor = const Color.fromRGBO(231, 248, 247, 1);
-      fgcolor = const Color.fromRGBO(13, 177, 173, 1);
-    } else {
-      // Handle other color schemes or set default values
-      bgcolor = Colors.white;
-      fgcolor = Colors.black;
-    }
-
-    return ElevatedButton(
-      onPressed: onPressed,
-      style: ElevatedButton.styleFrom(
-        backgroundColor: bgcolor,
-        foregroundColor: fgcolor,
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
-        minimumSize: Size(400, 60), //////// HERE
-      ),
-      child: Text(
-        buttonText,
-        style: const TextStyle(
-          fontSize: 28,
-          // fontWeight: FontWeight.bold,
-        ),
-      ),
-    );
-  }
-}
-
 class CustomElevatedButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String buttonText;
@@ -201,14 +153,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       //   title,
       //   style: const TextStyle(fontWeight: FontWeight.bold),
       // )),
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () {
-          if (Navigator.canPop(context)) {
-            Navigator.pop(context);
-          }
-        },
-      ),
+      leading: BackButton(),
+      // leading: IconButton(
+      //   icon: const Icon(Icons.arrow_back),
+      //   onPressed: () {
+      //     if (Navigator.canPop(context)) {
+      //       Navigator.pop(context);
+      //     }
+      //   },
+      // ),
     );
   }
 

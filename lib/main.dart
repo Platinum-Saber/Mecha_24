@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter/rendering.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 
 import 'home_page.dart';
 import 'profile_page.dart';
-import 'assets.dart';
 import 'plan_diet_page.dart';
 
 void main() {
@@ -73,6 +71,10 @@ class MyAppState extends ChangeNotifier {
   var activityLevel = 'Moderate';
   var maintainWeight = false;
   var currentCalorieIntake = 1800;
+
+  var mealToPack = 'Breakfast';
+  var mealIndex = 0;
+  var mealsCompleted = <bool>[false, false, false, false, false];
 
   void getUnit(String unit) {
     measureUnit = unit;
@@ -195,6 +197,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
 class HomePage extends HomePageGenerator {
   const HomePage({super.key});
+}
+
+class PackMyMealPage extends PackMyMealPageGenerator {
+  const PackMyMealPage({super.key});
 }
 
 class PlanDietPage extends PlanDietPageGenerator {
