@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "982255533121",
+    "project_id": "mecha-nw",
+    "storage_bucket": "mecha-nw.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:982255533121:android:c63275b73fec6b55d75ac0",
+        "android_client_info": {
+          "package_name": "com.example.mecha_nw"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQLrdFHu7jyTwq7G_tTHQLwkbq_QSqyqE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

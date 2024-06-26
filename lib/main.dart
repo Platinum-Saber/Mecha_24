@@ -8,9 +8,27 @@ import 'profile_page.dart';
 import 'plan_diet_page.dart';
 import 'calorieDiary_page.dart';
 
-void main() {
+import 'package:firebase_core/firebase_core.dart';
+// import 'firebase_options.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp();
+  await Firebase.initializeApp(
+    options: FirebaseOptions(
+      apiKey: 'AIzaSyDg5fBbdRQxkXgNpHHnJbQmi6-JMSRCOMk',
+      appId: '1:982255533121:android:c63275b73fec6b55d75ac0',
+      messagingSenderId: 'sendid',
+      projectId: 'mecha-nw',
+      storageBucket: 'myapp-b9yt18.appspot.com',
+    ),
+  );
   runApp(const MyApp());
 }
+
+// void main() {
+//   runApp(const MyApp());
+// }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

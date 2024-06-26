@@ -2,6 +2,9 @@ plugins {
     id "com.android.application"
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
+    // id 'com.google.gms.google-services' version '4.4.2' apply false
+    id 'com.google.gms.google-services'
+    id 'org.jetbrains.kotlin.android'
 }
 
 def localProperties = new Properties()
@@ -45,7 +48,8 @@ android {
         applicationId "com.example.mecha_nw"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdkVersion flutter.minSdkVersion
+        // minSdkVersion flutter.minSdkVersion
+        minSdkVersion 23
         targetSdkVersion flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -64,4 +68,9 @@ flutter {
     source '../..'
 }
 
-dependencies {}
+dependencies {
+    // import firebase BoM added ()before platform and the auth and firestore lines
+    implementation(platform('com.google.firebase:firebase-bom:33.1.1'))
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+}
