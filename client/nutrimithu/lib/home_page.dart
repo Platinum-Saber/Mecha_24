@@ -42,7 +42,7 @@ class HomePageGenerator extends StatelessWidget {
                 const SizedBox(height: 24.0),
                 const Text(
                   'Stats',
-                  style: const TextStyle(fontSize: 24, color: Colors.grey),
+                  style: TextStyle(fontSize: 24, color: Colors.grey),
                 ),
                 _showStats(appState),
               ],
@@ -207,10 +207,10 @@ class HomePageGenerator extends StatelessWidget {
   }
 
   Widget _plotWeightLoss() {
-    return Container(
+    return const SizedBox(
       height: 200,
       width: 400,
-      child: const Placeholder(
+      child: Placeholder(
         color: Colors.grey, //put the graph here
       ),
     );
@@ -259,14 +259,14 @@ class HomePageGenerator extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '${topicText}',
+              '$topicText',
               style: const TextStyle(
                 fontSize: 18,
                 color: Colors.grey,
               ),
             ),
             // const SizedBox(height: 20.0),
-            Text('${totalText} kCal',
+            Text('$totalText kCal',
                 style: const TextStyle(
                   fontSize: 24,
                   color: Colors.grey,
@@ -284,11 +284,11 @@ class ChooseMealButton extends StatelessWidget {
   final int mealIndex;
 
   const ChooseMealButton({
-    Key? key,
+    super.key,
     required this.buttonText,
     required this.colorScheme,
     required this.mealIndex,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -384,7 +384,7 @@ class PackMyMealPageState extends State<PackMyMealPageGenerator> {
             initialValue: apps.mealCals[apps.mealIndex].toString(),
             enabled: _isEditing,
             keyboardType: TextInputType.number,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               border: OutlineInputBorder(),
               contentPadding: EdgeInsets.all(8.0),
               suffixText: 'kCal',
@@ -468,21 +468,21 @@ class PackMyMealPageState extends State<PackMyMealPageGenerator> {
       child: Container(
         width: 400,
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: const Column(
           // mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Start serving your meal!',
               style: TextStyle(
                 color: Colors.grey,
                 fontSize: 18,
               ),
             ),
-            Container(
+            SizedBox(
               height: 200,
               width: 400,
-              child: const Placeholder(
+              child: Placeholder(
                 color: Colors.grey,
               ),
             ),
@@ -497,21 +497,21 @@ class PackMyMealPageState extends State<PackMyMealPageGenerator> {
       child: Container(
         width: 400,
         padding: const EdgeInsets.all(16.0),
-        child: Column(
+        child: const Column(
           // mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               'Use the following dividers!',
               style: TextStyle(
                 color: Colors.grey,
                 fontSize: 18,
               ),
             ),
-            Container(
+            SizedBox(
               height: 200,
               width: 400,
-              child: const Placeholder(
+              child: Placeholder(
                 color: Colors.grey,
               ),
             ),

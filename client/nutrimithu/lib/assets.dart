@@ -18,7 +18,7 @@ class CustomElevatedButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ButtonStyle(
-        padding: MaterialStateProperty.all(EdgeInsets.zero),
+        padding: WidgetStateProperty.all(EdgeInsets.zero),
       ),
       onPressed: onPressed,
       child: Ink(
@@ -56,8 +56,8 @@ class UnitButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>(
-          (Set<MaterialState> states) {
+        backgroundColor: WidgetStateProperty.resolveWith<Color>(
+          (Set<WidgetState> states) {
             if (pressed) {
               return Colors.lightBlue.shade400;
             } else {
@@ -65,8 +65,8 @@ class UnitButtons extends StatelessWidget {
             }
           },
         ),
-        foregroundColor: MaterialStateProperty.resolveWith<Color>(
-          (Set<MaterialState> states) {
+        foregroundColor: WidgetStateProperty.resolveWith<Color>(
+          (Set<WidgetState> states) {
             if (pressed) {
               return Colors.white; // Text color when button is pressed
             } else {
@@ -99,8 +99,8 @@ class CustomSmallButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>(
-          (Set<MaterialState> states) {
+        backgroundColor: WidgetStateProperty.resolveWith<Color>(
+          (Set<WidgetState> states) {
             if (pressed) {
               return Colors.lightBlue.shade400;
             } else {
@@ -108,8 +108,8 @@ class CustomSmallButtons extends StatelessWidget {
             }
           },
         ),
-        foregroundColor: MaterialStateProperty.resolveWith<Color>(
-          (Set<MaterialState> states) {
+        foregroundColor: WidgetStateProperty.resolveWith<Color>(
+          (Set<WidgetState> states) {
             if (pressed) {
               return Colors.white; // Text color when button is pressed
             } else {
@@ -147,7 +147,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         title,
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
-      leading: BackButton(),
+      leading: const BackButton(),
       // leading: IconButton(
       //   icon: const Icon(Icons.arrow_back),
       //   onPressed: () {
@@ -436,7 +436,7 @@ class CustomDropDownBoxVer2 extends StatefulWidget {
   final Set<Map<String, double>> pairList;
   final Map<String, double> pair;
 
-  CustomDropDownBoxVer2({
+  const CustomDropDownBoxVer2({
     super.key,
     required this.placeholder,
     required this.prefixText,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nutrimithu/login_page.dart';
 import 'package:provider/provider.dart';
 
 import 'home_page.dart';
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
               seedColor: const Color.fromARGB(255, 125, 167, 255)),
           useMaterial3: true,
         ),
-        home: const MyHomePage(),
+        home: const LoginPage(),
       ),
     );
   }
