@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nutrimithu/login_page.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 import 'home_page.dart';
 import 'profile_page.dart';
@@ -54,7 +56,13 @@ class MyAppState extends ChangeNotifier {
   final Set<Map<String, double>> lunchPrescription = {};
   final Set<Map<String, double>> dinnerPrescription = {};
 
-  var name = 'Helena Hills'; //get from database
+  var _name = ''; // Default name
+  String get name => _name;
+  void setName(String value) {
+    _name = value;
+    notifyListeners();
+  }
+
   var email = 'name@domain.com'; //get from database
   var username = '@helenahills'; //get from database
   var profilepic = ''; //get from database
@@ -81,6 +89,30 @@ class MyAppState extends ChangeNotifier {
   var mealToPack = 'Breakfast';
   var mealIndex = 0;
   var mealsCompleted = <bool>[false, false, false, false, false];
+
+  MyAppState() {
+    _loadUserName();
+  }
+
+  Future<void> _loadUserName() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString('user');
+    if (userJson != null) {
+      final userData = jsonDecode(userJson);
+      _name = userData['name'] ?? 'Guest';
+      notifyListeners();
+    }
+  }
+
+  void resetState() {
+    // Reset all relevant state variables
+    _name = '';
+    email = 'name@domain.com';
+    username = '@username';
+    profilepic = '';
+    // Reset other variables as needed
+    notifyListeners();
+  }
 
   void getUnit(String unit) {
     measureUnit = unit;
@@ -127,6 +159,11 @@ class MyAppState extends ChangeNotifier {
   void changeProfilePicture() {
     // Implement logic to change the profile picture
   }
+
+  void updateUserName(String newName) {
+    _name = newName;
+    notifyListeners();
+  }
 }
 
 class MyHomePage extends StatefulWidget {
@@ -153,6 +190,24 @@ class _MyHomePageState extends State<MyHomePage> {
     'Profile',
   ];
 
+  void _handleLogout() async {
+    try {
+      // Clear user data from SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.clear();
+      // Reset the app state
+      Provider.of<MyAppState>(context, listen: false).resetState();
+
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => const LoginPage()),
+        (Route<dynamic> route) => false,
+      );
+    } catch (e) {
+      print('Error during logout: $e');
+      // Handle the error appropriately
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -169,9 +224,13 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
+          if (index == 4) {
+            _handleLogout();
+          } else {
+            setState(() {
+              _currentIndex = index;
+            });
+          }
         },
         selectedItemColor: const Color.fromARGB(
             255, 125, 167, 255), // Set the color for selected items
@@ -194,6 +253,10 @@ class _MyHomePageState extends State<MyHomePage> {
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
             label: 'Profile',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.logout),
+            label: 'Logout',
           ),
         ],
       ),

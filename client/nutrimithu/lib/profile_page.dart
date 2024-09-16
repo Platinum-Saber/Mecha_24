@@ -168,7 +168,7 @@ class _ProfilePageState extends State<ProfilePageGenerator> {
       ),
       onChanged: (value) {
         setState(() {
-          appState.name = value;
+          appState.setName(value);
         });
       },
     );

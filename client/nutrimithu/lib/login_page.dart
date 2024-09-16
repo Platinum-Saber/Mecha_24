@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:provider/provider.dart';
+
 import 'main.dart'; // Import the HomePage for navigation after login
 import 'signup_page.dart'; // Import the SignUpPage for navigation to sign up
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -37,6 +40,14 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        final user = responseData['user'];
+
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('user', jsonEncode(user));
+
+        Provider.of<MyAppState>(context, listen: false)
+            .updateUserName(user['name']);
         // Login successful, navigate to HomePage
         Navigator.pushReplacement(
           context,
