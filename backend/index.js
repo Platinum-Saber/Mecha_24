@@ -86,7 +86,14 @@ app.post('/login', [
       return res.status(400).json({ error: 'Invalid email or password' });
     }
 
-    res.status(200).json({ message: 'Login successful', user });
+    const userWithoutPassword = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      // Add any other fields you want to include
+    };
+
+    res.status(200).json({ message: 'Login successful', user: userWithoutPassword });
   } catch (error) {
     res.status(500).json({ error: 'Error logging in user' });
   }
