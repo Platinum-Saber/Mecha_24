@@ -105,3 +105,15 @@ CREATE TABLE `user_profiles` (
     `bmi` DECIMAL(4, 2),
     FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
 );
+
+DELIMITER //
+
+CREATE TRIGGER after_user_insert
+AFTER INSERT ON users
+FOR EACH ROW
+BEGIN
+  INSERT INTO user_profiles (user_id)
+  VALUES (NEW.user_id);
+END //
+
+DELIMITER ;

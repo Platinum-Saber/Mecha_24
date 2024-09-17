@@ -38,7 +38,10 @@ Object.keys(db).forEach(modelName => {
     db[modelName].associate(db);
   }
 });
-
+sequelize.sync({ force: false })
+  .then(() => console.log('Database & tables created!'))
+  .catch(err => console.log('Error syncing database:', err));
+  
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
 

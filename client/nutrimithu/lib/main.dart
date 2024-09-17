@@ -39,6 +39,14 @@ class MyAppState extends ChangeNotifier {
   var recCal = "1800";
   var total = "1000";
   var mealCals = <double>[0, 0, 0, 0, 0];
+  String mealToPack = '';
+  int _mealIndex = 0;
+
+  int get mealIndex => _mealIndex;
+  set mealIndex(int value) {
+    _mealIndex = value;
+    notifyListeners();
+  }
 
   var breakfast = <String>{}.toSet();
   var snack1 = <String>{}.toSet();
@@ -56,39 +64,142 @@ class MyAppState extends ChangeNotifier {
   final Set<Map<String, double>> lunchPrescription = {};
   final Set<Map<String, double>> dinnerPrescription = {};
 
-  var _name = ''; // Default name
-  String get name => _name;
-  void setName(String value) {
-    _name = value;
+  int userId = 0;
+  String username = '';
+  String name = '';
+  String email = '';
+  String gender = '';
+  DateTime dateOfBirth = DateTime.now();
+  double height = 0;
+  double weight = 0;
+  String dietaryPreference = '';
+  String allergies = '';
+  String ethnicity = '';
+  String activityLevel = '';
+  int currentCaloriesPerDay = 0;
+  String weightGoal = '';
+  double targetWeightKg = 0;
+  String weightChangeRate = '0';
+
+  void updateProfileFromJson(Map<String, dynamic> json) {
+    userId = json['user_id'] ?? userId;
+    username = json['username'] ?? username;
+    name = json['name'] ?? name;
+    email = json['email'] ?? email;
+    gender = json['gender'] ?? gender;
+    dateOfBirth = json['date_of_birth'] != null
+        ? DateTime.parse(json['date_of_birth'])
+        : dateOfBirth;
+    height = json['height_cm']?.toDouble() ?? height;
+    weight = json['weight_kg']?.toDouble() ?? weight;
+    dietaryPreference = json['dietary_preference'] ?? dietaryPreference;
+    allergies = json['allergies'] ?? allergies;
+    ethnicity = json['ethnicity'] ?? ethnicity;
+    activityLevel = json['activity_level'] ?? activityLevel;
+    currentCaloriesPerDay =
+        json['current_calories_per_day'] ?? currentCaloriesPerDay;
+    weightGoal = json['weight_goal'] ?? weightGoal;
+    targetWeightKg = json['target_weight_kg']?.toDouble() ?? targetWeightKg;
+    weightChangeRate = json['weight_change_rate'] ?? weightChangeRate;
     notifyListeners();
   }
 
-  var email = 'name@domain.com'; //get from database
-  var username = '@helenahills'; //get from database
-  var profilepic = ''; //get from database
-  var sex = 'Female'; //get from database
-  var vegetarian = 'Vegetarian'; //get from database
-  var dateOfBirth = DateTime(1990, 1, 1);
-  var height = 170.0;
-  var heightUnit = 'none';
-  var heightInCm = true;
-  var weight = 60.0;
-  var allergies = 'None';
-  var bmi = 20.76;
-  var bmiCategory = 'Normal Weight';
-  // var weightToLose = 2;
-  var eer = 20;
-  var weightLossGoal = 10;
-  var weightLossRate = 500;
-  var protienPerDay = 50;
-  var srilankan = 'Sri Lankan';
-  var activityLevel = 'Moderate';
-  var maintainWeight = false;
-  var currentCalorieIntake = 1800;
+  Map<String, dynamic> toJson() {
+    return {
+      'user_id': userId,
+      'username': username,
+      'name': name,
+      'email': email,
+      'gender': gender,
+      'date_of_birth': dateOfBirth.toIso8601String(),
+      'height_cm': height,
+      'weight_kg': weight,
+      'dietary_preference': dietaryPreference,
+      'allergies': allergies,
+      'ethnicity': ethnicity,
+      'activity_level': activityLevel,
+      'current_calories_per_day': currentCaloriesPerDay,
+      'weight_goal': weightGoal,
+      'target_weight_kg': targetWeightKg,
+      'weight_change_rate': weightChangeRate,
+    };
+  }
 
-  var mealToPack = 'Breakfast';
-  var mealIndex = 0;
-  var mealsCompleted = <bool>[false, false, false, false, false];
+  // Setters for each field that call notifyListeners()
+  set setUsername(String value) {
+    username = value;
+    notifyListeners();
+  }
+
+  set setName(String value) {
+    name = value;
+    notifyListeners();
+  }
+
+  set setEmail(String value) {
+    email = value;
+    notifyListeners();
+  }
+
+  set setGender(String value) {
+    gender = value;
+    notifyListeners();
+  }
+
+  set setDateOfBirth(DateTime value) {
+    dateOfBirth = value;
+    notifyListeners();
+  }
+
+  set setHeight(double value) {
+    height = value;
+    notifyListeners();
+  }
+
+  set setWeight(double value) {
+    weight = value;
+    notifyListeners();
+  }
+
+  set setDietaryPreference(String value) {
+    dietaryPreference = value;
+    notifyListeners();
+  }
+
+  set setAllergies(String value) {
+    allergies = value;
+    notifyListeners();
+  }
+
+  set setEthnicity(String value) {
+    ethnicity = value;
+    notifyListeners();
+  }
+
+  set setActivityLevel(String value) {
+    activityLevel = value;
+    notifyListeners();
+  }
+
+  set setCurrentCaloriesPerDay(int value) {
+    currentCaloriesPerDay = value;
+    notifyListeners();
+  }
+
+  set setWeightGoal(String value) {
+    weightGoal = value;
+    notifyListeners();
+  }
+
+  set setTargetWeightKg(double value) {
+    targetWeightKg = value;
+    notifyListeners();
+  }
+
+  set setWeightChangeRate(String value) {
+    weightChangeRate = value;
+    notifyListeners();
+  }
 
   MyAppState() {
     _loadUserName();
@@ -99,17 +210,29 @@ class MyAppState extends ChangeNotifier {
     final userJson = prefs.getString('user');
     if (userJson != null) {
       final userData = jsonDecode(userJson);
-      _name = userData['name'] ?? 'Guest';
+      name = userData['name'] ?? 'Guest';
       notifyListeners();
     }
   }
 
   void resetState() {
     // Reset all relevant state variables
-    _name = '';
-    email = 'name@domain.com';
-    username = '@username';
-    profilepic = '';
+    userId = 0;
+    username = '';
+    name = '';
+    email = '';
+    gender = '';
+    dateOfBirth = DateTime.now();
+    height = 0;
+    weight = 0;
+    dietaryPreference = '';
+    allergies = '';
+    ethnicity = '';
+    activityLevel = '';
+    currentCaloriesPerDay = 0;
+    weightGoal = '';
+    targetWeightKg = 0;
+    weightChangeRate = '0';
     // Reset other variables as needed
     notifyListeners();
   }
@@ -132,15 +255,74 @@ class MyAppState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void getHeightUnit(String unit) {
-    heightUnit = unit;
-    if (unit == "cm") {
-      heightInCm = true;
+  double get bmi {
+    if (height > 0) {
+      return weight / ((height / 100) * (height / 100));
     } else {
-      heightInCm = false;
+      return 0;
     }
-    notifyListeners();
   }
+
+  String get bmiCategory {
+    double bmiValue = bmi;
+    if (bmiValue < 18.5) {
+      return 'Underweight';
+    } else if (bmiValue < 24.9) {
+      return 'Normal weight';
+    } else if (bmiValue < 29.9) {
+      return 'Overweight';
+    } else {
+      return 'Obesity';
+    }
+  }
+
+  double get weightLossGoal {
+    // Assuming the target BMI is 22.9 for normal weight
+    const double targetBmi = 22.9;
+    if (height > 0) {
+      double targetWeight = targetBmi * ((height / 100) * (height / 100));
+      return weight - targetWeight;
+    } else {
+      return 0;
+    }
+  }
+
+  double get eer {
+    double pa = 1.0; // Default Physical Activity factor
+    // Adjust PA based on activity level
+    switch (activityLevel.toLowerCase()) {
+      case 'sedentary':
+        pa = 1.0;
+        break;
+      case 'low active':
+        pa = 1.12;
+        break;
+      case 'active':
+        pa = 1.27;
+        break;
+      case 'very active':
+        pa = 1.45;
+        break;
+    }
+
+    double heightInMeters = height / 100;
+    int age = DateTime.now().year - dateOfBirth.year;
+
+    if (gender.toLowerCase() == 'male') {
+      return 662 -
+          (9.53 * age) +
+          pa * (15.91 * weight + 539.6 * heightInMeters);
+    } else {
+      return 354 - (6.91 * age) + pa * (9.36 * weight + 726 * heightInMeters);
+    }
+  }
+
+  double get proteinPerDay {
+    // Recommended daily protein intake: 0.8 grams per kilogram of body weight
+    return weight * 0.8;
+  }
+
+  double weightLossRate = 0.5;
 
   void getTotal() {
     double tot = 0;
@@ -161,7 +343,7 @@ class MyAppState extends ChangeNotifier {
   }
 
   void updateUserName(String newName) {
-    _name = newName;
+    name = newName;
     notifyListeners();
   }
 }

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-// import 'assets.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'main.dart';
 
 class ProfilePageGenerator extends StatefulWidget {
-  const ProfilePageGenerator({super.key});
+  const ProfilePageGenerator({Key? key}) : super(key: key);
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -13,555 +14,327 @@ class ProfilePageGenerator extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePageGenerator> {
   bool _isEditing = false;
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _fetchUsername();
-  // }
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserProfile();
+  }
+
+  Future<void> _fetchUserProfile() async {
+    var appState = context.read<MyAppState>();
+    final response = await http.get(
+      Uri.parse('http://10.0.2.2:3000/user-profile/${appState.userId}'),
+    );
+
+    if (response.statusCode == 200) {
+      final profileData = json.decode(response.body);
+      appState.updateProfileFromJson(profileData);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to load user profile')),
+      );
+    }
+  }
+
+  Future<void> _saveProfile() async {
+    if (_formKey.currentState!.validate()) {
+      var appState = context.read<MyAppState>();
+      final response = await http.put(
+        Uri.parse('http://10.0.2.2:3000/user-profile/${appState.userId}'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(appState.toJson()),
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Profile updated successfully')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Failed to update profile')),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // var appState = context.watch<MyAppState>();
     return Scaffold(
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _profilePicture(),
-                    _usernameShow(),
-                    _name(),
-                    const SizedBox(height: 16),
-                    _email(),
-                    const SizedBox(height: 16),
-                    _sex(),
-                    const SizedBox(height: 16),
-                    _dateOfBirth(),
-                    const SizedBox(height: 16),
-                    _height(),
-                    const SizedBox(height: 16),
-                    _weight(),
-                    const SizedBox(height: 16),
-                    _diataryPreference(),
-                    const SizedBox(height: 16),
-                    _allergies(),
-                    const SizedBox(height: 16),
-                    _srilankan(),
-                    const SizedBox(height: 16),
-                    _activityLevel(),
-                    _currentCalorieIntake(),
-                    const SizedBox(height: 16),
-                    _needToLoseWeight(),
-                    const SizedBox(height: 16),
-                    _weightLossGoal(),
-                    const SizedBox(height: 16),
-                    _weightLossRate(),
-                  ],
-                ),
-              ),
-            ),
+      appBar: AppBar(title: const Text('Profile')),
+      body: Form(
+        key: _formKey,
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _profilePicture(),
+              _usernameShow(),
+              _name(),
+              _email(),
+              _sex(),
+              _dateOfBirth(),
+              _height(),
+              _weight(),
+              _dietaryPreference(),
+              _allergies(),
+              _ethnicity(),
+              _activityLevel(),
+              _currentCalorieIntake(),
+              _weightGoal(),
+              _targetWeight(),
+              _weightChangeRate(),
+            ],
           ),
-        ],
-      ),
-      floatingActionButton: Positioned(
-        bottom: 16.0,
-        right: 16.0,
-        child: FloatingActionButton(
-          onPressed: _toggleEditMode,
-          child: Icon(_isEditing ? Icons.done : Icons.edit),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: _toggleEditMode,
+        child: Icon(_isEditing ? Icons.save : Icons.edit),
       ),
     );
   }
 
   void _toggleEditMode() {
     setState(() {
-      if (!_isEditing) {
+      if (_isEditing) {
         _saveProfile();
       }
       _isEditing = !_isEditing;
     });
   }
 
-  void _saveProfile() {
-    // Save the profile changes here
-    setState(() {
-      _isEditing = false;
-    });
-  }
-
-  // Future<void> _fetchUsername() async {
-  // Fetch the username from the database
-  // var username = await fetchUsername();
-  // var appState = context.read<MyAppState>();
-  // appState.username = username;
-  // }
-
-  void _selectDateOfBirth() {
-    var appState = context.read<MyAppState>();
-    showDatePicker(
-      context: context,
-      initialDate: appState.dateOfBirth,
-      firstDate: DateTime(1900),
-      lastDate: DateTime.now(),
-    ).then((value) {
-      if (value != null) {
-        setState(() {
-          appState.dateOfBirth = value;
-        });
-      }
-    });
-  }
-
   Widget _profilePicture() {
-    var appState = context.read<MyAppState>();
-    return Center(
-      child: Stack(
-        children: [
-          CircleAvatar(
-            radius: 50,
-            backgroundImage: AssetImage(appState.profilepic),
-          ),
-          if (_isEditing)
-            Positioned(
-              bottom: 0,
-              right: 0,
-              child: IconButton(
-                icon: const Icon(Icons.camera_alt),
-                onPressed: () {
-                  appState.changeProfilePicture();
-                },
-              ),
-            ),
-        ],
-      ),
+    return const CircleAvatar(
+      radius: 50,
+      child: Icon(Icons.person, size: 50),
     );
   }
 
   Widget _usernameShow() {
-    var appState = context.read<MyAppState>();
-    return Center(
-      child: Text(appState.username,
-          style: const TextStyle(
-            color: Colors.blue,
-            fontSize: 20,
-          )),
+    var appState = context.watch<MyAppState>();
+    return ListTile(
+      title: const Text('Username'),
+      subtitle: Text(appState.username),
     );
   }
 
   Widget _name() {
-    var appState = context.read<MyAppState>();
+    var appState = context.watch<MyAppState>();
     return TextFormField(
-      initialValue: appState.name,
       enabled: _isEditing,
-      decoration: InputDecoration(
-        labelText: 'Name',
-        labelStyle: TextStyle(
-          color: _isEditing
-              ? null
-              : Colors.black, // Set color to black in non-editing mode
-        ),
-      ),
-      onChanged: (value) {
-        setState(() {
-          appState.setName(value);
-        });
-      },
+      initialValue: appState.name,
+      decoration: const InputDecoration(labelText: 'Name'),
+      onChanged: (value) => appState.name = value,
     );
   }
 
   Widget _email() {
-    var appState = context.read<MyAppState>();
+    var appState = context.watch<MyAppState>();
     return TextFormField(
+      enabled: _isEditing,
       initialValue: appState.email,
-      enabled: false,
-      decoration: const InputDecoration(
-        labelText: 'Email',
-        labelStyle: TextStyle(
-          color: Colors.black, // Set color to black in non-editing mode
-        ),
-      ),
+      decoration: const InputDecoration(labelText: 'Email'),
+      onChanged: (value) => appState.email = value,
     );
   }
 
   Widget _sex() {
-    var appState = context.read<MyAppState>();
+    var appState = context.watch<MyAppState>();
     return DropdownButtonFormField<String>(
-      value: appState.sex,
+      value: appState.gender.isNotEmpty ? appState.gender : null,
       items: const [
-        DropdownMenuItem(value: 'Male', child: Text('Male')),
-        DropdownMenuItem(value: 'Female', child: Text('Female')),
+        DropdownMenuItem(value: 'male', child: Text('Male')),
+        DropdownMenuItem(value: 'female', child: Text('Female')),
+        DropdownMenuItem(value: 'other', child: Text('Other')),
       ],
-      onChanged: _isEditing
-          ? (value) {
-              setState(() {
-                appState.sex = value!;
-              });
-            }
-          : null,
+      onChanged: _isEditing ? (value) => appState.gender = value! : null,
       decoration: InputDecoration(
-        labelText: 'Sex',
-        labelStyle: TextStyle(
-          color: _isEditing ? null : Colors.black,
-        ),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Color.fromARGB(95, 162, 159, 167),
-            width: 1,
-          ),
-        ),
+        labelText: 'Gender',
+        enabled: _isEditing,
       ),
     );
   }
 
   Widget _dateOfBirth() {
-    var appState = context.read<MyAppState>();
-    return GestureDetector(
-      onTap: _isEditing ? _selectDateOfBirth : null,
-      child: AbsorbPointer(
-        child: TextFormField(
-          controller: TextEditingController(
-            text: DateFormat('yyyy-MM-dd').format(appState.dateOfBirth),
-          ),
-          enabled: _isEditing,
-          style: TextStyle(
-            color: _isEditing ? Colors.black : Colors.grey,
-          ),
-          decoration: InputDecoration(
-            labelText: 'Date of Birth',
-            labelStyle: TextStyle(
-              color: _isEditing ? null : Colors.black,
-            ),
-            suffixIcon: _isEditing ? const Icon(Icons.calendar_today) : null,
-          ),
-        ),
+    var appState = context.watch<MyAppState>();
+    return TextFormField(
+      enabled: _isEditing,
+      controller: TextEditingController(
+        text: DateFormat('yyyy-MM-dd').format(appState.dateOfBirth),
       ),
+      decoration: const InputDecoration(labelText: 'Date of Birth'),
+      onTap: _isEditing
+          ? () async {
+              final pickedDate = await showDatePicker(
+                context: context,
+                initialDate: appState.dateOfBirth,
+                firstDate: DateTime(1900),
+                lastDate: DateTime.now(),
+              );
+              if (pickedDate != null) {
+                appState.dateOfBirth = pickedDate;
+              }
+            }
+          : null,
     );
   }
 
   Widget _height() {
-    var appState = context.read<MyAppState>();
-    return Row(
-      children: [
-        Expanded(
-          child: TextFormField(
-            initialValue: appState.height.toStringAsFixed(2),
-            enabled: _isEditing,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              suffixText: appState.heightInCm ? 'cm' : 'in',
-              labelText: 'Height',
-              labelStyle: TextStyle(
-                color: _isEditing ? null : Colors.black,
-              ),
-            ),
-            onChanged: (value) {
-              setState(() {
-                appState.height = double.parse(value);
-              });
-            },
-          ),
-        ),
-        const SizedBox(width: 8),
-        IntrinsicWidth(
-          child: DropdownButtonFormField<bool>(
-            value: appState.heightInCm,
-            // enabled: _isEditing,
-            items: const [
-              DropdownMenuItem<bool>(value: true, child: Text('cm')),
-              DropdownMenuItem<bool>(value: false, child: Text('in')),
-            ],
-            onChanged: _isEditing
-                ? (value) {
-                    if (value != null) {
-                      setState(() {
-                        appState.heightInCm = value;
-                      });
-                    }
-                  }
-                : null,
-            decoration: InputDecoration(
-              labelText: 'Unit',
-              labelStyle: TextStyle(
-                color: _isEditing ? null : Colors.black,
-              ),
-              enabledBorder: const UnderlineInputBorder(
-                borderSide: BorderSide(
-                  color: Color.fromARGB(95, 162, 159, 167),
-                  width: 1,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ],
+    var appState = context.watch<MyAppState>();
+    return TextFormField(
+      enabled: _isEditing,
+      initialValue: appState.height.toString(),
+      decoration: const InputDecoration(labelText: 'Height (cm)'),
+      keyboardType: TextInputType.number,
+      onChanged: (value) =>
+          appState.height = double.tryParse(value) ?? appState.height,
     );
   }
 
   Widget _weight() {
-    var appState = context.read<MyAppState>();
-    return Row(
-      children: [
-        Expanded(
-          child: TextFormField(
-            initialValue: appState.weight.toStringAsFixed(2),
-            enabled: _isEditing,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              suffixText: 'kg',
-              labelText: 'Weight in kg',
-              labelStyle: TextStyle(
-                color: _isEditing ? null : Colors.black,
-              ),
-            ),
-            onChanged: (value) {
-              setState(() {
-                appState.weight = double.parse(value);
-              });
-            },
-          ),
-        ),
-        // const SizedBox(width: 8),
-        // const Text('kg'),
-      ],
+    var appState = context.watch<MyAppState>();
+    return TextFormField(
+      enabled: _isEditing,
+      initialValue: appState.weight.toString(),
+      decoration: const InputDecoration(labelText: 'Weight (kg)'),
+      keyboardType: TextInputType.number,
+      onChanged: (value) =>
+          appState.weight = double.tryParse(value) ?? appState.weight,
     );
   }
 
-  Widget _diataryPreference() {
-    var appState = context.read<MyAppState>();
+  Widget _dietaryPreference() {
+    var appState = context.watch<MyAppState>();
     return DropdownButtonFormField<String>(
-      value: appState.vegetarian,
-      items: const [
-        DropdownMenuItem(value: 'Vegetarian', child: Text('Vegetarian')),
-        DropdownMenuItem(
-            value: 'Non Vegetarian', child: Text('Non Vegetarian')),
-        DropdownMenuItem(value: 'Vegan', child: Text('Vegan')),
-      ],
-      onChanged: _isEditing
-          ? (value) {
-              setState(() {
-                appState.vegetarian = value!;
-              });
-            }
+      value: appState.dietaryPreference.isNotEmpty
+          ? appState.dietaryPreference
           : null,
+      items: const [
+        DropdownMenuItem(value: 'vegetarian', child: Text('Vegetarian')),
+        DropdownMenuItem(
+            value: 'non_vegetarian', child: Text('Non Vegetarian')),
+        DropdownMenuItem(value: 'vegan', child: Text('Vegan')),
+      ],
+      onChanged:
+          _isEditing ? (value) => appState.dietaryPreference = value! : null,
       decoration: InputDecoration(
         labelText: 'Dietary Preference',
-        labelStyle: TextStyle(
-          color: _isEditing ? null : Colors.black,
-        ),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Color.fromARGB(95, 162, 159, 167),
-            width: 1,
-          ),
-        ),
+        enabled: _isEditing,
       ),
     );
   }
 
   Widget _allergies() {
-    var appState = context.read<MyAppState>();
+    var appState = context.watch<MyAppState>();
     return TextFormField(
-      initialValue: appState.allergies,
       enabled: _isEditing,
-      keyboardType: TextInputType.text,
-      decoration: InputDecoration(
-        labelText: 'Do you have any allergies?',
-        labelStyle: TextStyle(
-          color: _isEditing ? null : Colors.black,
-        ),
-      ),
-      onChanged: (value) {
-        setState(() {
-          appState.allergies = value;
-        });
-      },
+      initialValue: appState.allergies,
+      decoration: const InputDecoration(labelText: 'Allergies'),
+      onChanged: (value) => appState.allergies = value,
     );
   }
 
-  Widget _srilankan() {
-    var appState = context.read<MyAppState>();
+  Widget _ethnicity() {
+    var appState = context.watch<MyAppState>();
     return DropdownButtonFormField<String>(
-      value: appState.srilankan.toString(),
+      value: appState.ethnicity.isNotEmpty ? appState.ethnicity : null,
       items: const [
-        DropdownMenuItem(value: 'Sri Lankan', child: Text('Sri Lankan')),
-        DropdownMenuItem(value: 'South Asian', child: Text('South Asian')),
-        DropdownMenuItem(value: 'Asian', child: Text('Asian')),
-        DropdownMenuItem(value: 'Non Asian', child: Text('Non Asian')),
+        DropdownMenuItem(value: 'sri_lankan', child: Text('Sri Lankan')),
+        DropdownMenuItem(value: 'south_asian', child: Text('South Asian')),
+        DropdownMenuItem(value: 'asian', child: Text('Asian')),
+        DropdownMenuItem(value: 'non_asian', child: Text('Non Asian')),
       ],
-      onChanged: _isEditing
-          ? (value) {
-              setState(() {
-                appState.srilankan = value!;
-              });
-            }
-          : null,
+      onChanged: _isEditing ? (value) => appState.ethnicity = value! : null,
       decoration: InputDecoration(
-        labelText: 'Are you Sri Lankan by descent?',
-        labelStyle: TextStyle(
-          color: _isEditing ? null : Colors.black,
-        ),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Color.fromARGB(95, 162, 159, 167),
-            width: 1,
-          ),
-        ),
+        labelText: 'Ethnicity',
+        enabled: _isEditing,
       ),
     );
   }
 
   Widget _activityLevel() {
-    var appState = context.read<MyAppState>();
-    return Column(
-      children: [
-        DropdownButtonFormField<String>(
-          value: appState.activityLevel,
-          items: const [
-            DropdownMenuItem(value: 'Light', child: Text('Light')),
-            DropdownMenuItem(value: 'Moderate', child: Text('Moderate')),
-            DropdownMenuItem(value: 'Active', child: Text('Active')),
-            DropdownMenuItem(value: 'Very Active', child: Text('Very Active')),
-          ],
-          onChanged: _isEditing
-              ? (value) {
-                  setState(() {
-                    appState.activityLevel = value!;
-                  });
-                }
-              : null,
-          decoration: InputDecoration(
-            labelText: 'What is your general activity level?',
-            labelStyle: TextStyle(
-              color: _isEditing ? null : Colors.black,
-            ),
-            enabledBorder: const UnderlineInputBorder(
-              borderSide: BorderSide(
-                color: Color.fromARGB(95, 162, 159, 167),
-                width: 1,
-              ),
-            ),
-          ),
-        ),
-        const ExpansionTile(
-          tilePadding: EdgeInsets.zero,
-          title: Text('Activity Level Description',
-              style: TextStyle(color: Colors.grey, fontSize: 12)),
-          children: [
-            Text(
-                'Light: light physical activity associated with independent living.\nModerate: light + half an hour of moderate to vigorous exercise per day.\nActive: at least one hour of exercise per day.\nVery Active: physically active for several hours each day.'),
-          ],
-        ),
+    var appState = context.watch<MyAppState>();
+    return DropdownButtonFormField<String>(
+      value: appState.activityLevel.isNotEmpty ? appState.activityLevel : null,
+      items: const [
+        DropdownMenuItem(value: 'light', child: Text('Light')),
+        DropdownMenuItem(value: 'moderate', child: Text('Moderate')),
+        DropdownMenuItem(value: 'active', child: Text('Active')),
+        DropdownMenuItem(value: 'very_active', child: Text('Very Active')),
       ],
+      onChanged: _isEditing ? (value) => appState.activityLevel = value! : null,
+      decoration: InputDecoration(
+        labelText: 'Activity Level',
+        enabled: _isEditing,
+      ),
     );
   }
 
   Widget _currentCalorieIntake() {
-    var appState = context.read<MyAppState>();
+    var appState = context.watch<MyAppState>();
     return TextFormField(
-      initialValue: appState.currentCalorieIntake.toStringAsFixed(2),
       enabled: _isEditing,
+      initialValue: appState.currentCaloriesPerDay.toString(),
+      decoration:
+          const InputDecoration(labelText: 'Current Calorie Intake (per day)'),
       keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        suffixText: 'cal',
-        labelText: 'What is your current calorie intake per day?',
-        labelStyle: TextStyle(
-          color: _isEditing ? null : Colors.black,
-        ),
-      ),
-      onChanged: (value) {
-        setState(() {
-          appState.currentCalorieIntake = int.parse(value);
-        });
-      },
+      onChanged: (value) => appState.currentCaloriesPerDay =
+          int.tryParse(value) ?? appState.currentCaloriesPerDay,
     );
   }
 
-  Widget _needToLoseWeight() {
-    var appState = context.read<MyAppState>();
-    return DropdownButtonFormField<bool>(
-      value: appState.maintainWeight,
-      // enabled: _isEditing,
+  Widget _weightGoal() {
+    var appState = context.watch<MyAppState>();
+    return DropdownButtonFormField<String>(
+      value: appState.weightGoal.isNotEmpty ? appState.weightGoal : null,
       items: const [
-        DropdownMenuItem<bool>(value: true, child: Text('Lose Weight')),
-        DropdownMenuItem<bool>(value: false, child: Text('Maintain Weight')),
+        DropdownMenuItem(value: 'maintain', child: Text('Maintain')),
+        DropdownMenuItem(value: 'lose', child: Text('Lose')),
+        DropdownMenuItem(value: 'gain', child: Text('Gain')),
       ],
-      onChanged: _isEditing
-          ? (value) {
-              if (value != null) {
-                setState(() {
-                  appState.maintainWeight = value;
-                });
-              }
-            }
-          : null,
+      onChanged: _isEditing ? (value) => appState.weightGoal = value! : null,
       decoration: InputDecoration(
-        labelText: 'Do you need to maintain your weight or lose weight?',
-        labelStyle: TextStyle(
-          color: _isEditing ? null : Colors.black,
-        ),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Color.fromARGB(95, 162, 159, 167),
-            width: 1,
-          ),
-        ),
+        labelText: 'Weight Goal',
+        enabled: _isEditing,
       ),
     );
   }
 
-  Widget _weightLossGoal() {
-    var appState = context.read<MyAppState>();
+  Widget _targetWeight() {
+    var appState = context.watch<MyAppState>();
     return TextFormField(
-      initialValue: appState.weightLossGoal.toStringAsFixed(2),
       enabled: _isEditing,
+      initialValue: appState.targetWeightKg.toString(),
+      decoration: const InputDecoration(labelText: 'Target Weight (kg)'),
       keyboardType: TextInputType.number,
-      decoration: InputDecoration(
-        labelText: 'If yes, how much weight you want to lose?',
-        labelStyle: TextStyle(
-          color: _isEditing ? null : Colors.black,
-        ),
-      ),
-      onChanged: (value) {
-        setState(() {
-          appState.weightLossGoal = int.parse(value);
-        });
-      },
+      onChanged: (value) => appState.targetWeightKg =
+          double.tryParse(value) ?? appState.targetWeightKg,
     );
   }
 
-  Widget _weightLossRate() {
-    var appState = context.read<MyAppState>();
-    return DropdownButtonFormField<double>(
-      value: appState.weightLossRate.toDouble(),
-      items: const [
-        DropdownMenuItem(value: 200, child: Text('200g per week')),
-        DropdownMenuItem(value: 500, child: Text('500g per week')),
-        DropdownMenuItem(value: 750, child: Text('750g per week')),
-        DropdownMenuItem(value: 1000, child: Text('1kg per week')),
-      ],
-      onChanged: _isEditing
-          ? (value) {
-              setState(() {
-                appState.weightLossRate = value!.toInt();
-              });
-            }
+  Widget _weightChangeRate() {
+    var appState = context.watch<MyAppState>();
+    return DropdownButtonFormField<String>(
+      value: appState.weightChangeRate.isNotEmpty
+          ? appState.weightChangeRate
           : null,
+      items: const [
+        DropdownMenuItem(value: '0', child: Text('Maintain')),
+        DropdownMenuItem(value: '200', child: Text('Slow')),
+        DropdownMenuItem(value: '400', child: Text('Moderate')),
+        DropdownMenuItem(value: '600', child: Text('Fast')),
+        DropdownMenuItem(value: '800', child: Text('Very Fast')),
+      ],
+      onChanged:
+          _isEditing ? (value) => appState.weightChangeRate = value! : null,
       decoration: InputDecoration(
-        labelText: 'Prefered rate of weight loss',
-        labelStyle: TextStyle(
-          color: _isEditing ? null : Colors.black,
-        ),
-        enabledBorder: const UnderlineInputBorder(
-          borderSide: BorderSide(
-            color: Color.fromARGB(95, 162, 159, 167),
-            width: 1,
-          ),
-        ),
+        labelText: 'Weight Change Rate (calories/day)',
+        enabled: _isEditing,
       ),
     );
   }

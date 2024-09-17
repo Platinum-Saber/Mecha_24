@@ -42,7 +42,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false
       },
       target_weight_kg: DataTypes.DECIMAL(5, 2),
-      weight_change_rate: DataTypes.ENUM('slow', 'moderate', 'fast')
+      weight_change_rate: DataTypes.ENUM('0', '200', '400', '600', '800')
     }, {
       tableName: 'user_profiles',
       timestamps: false
