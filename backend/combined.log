@@ -89,3 +89,12 @@
 {"level":"info","message":"Server is running on port 3000"}
 {"level":"info","message":"Server is running on port 3000"}
 {"level":"info","message":"Executing (default): SELECT `user_id`, `gender`, `date_of_birth`, `height_cm`, `weight_kg`, `dietary_preference`, `allergies`, `ethnicity`, `activity_level`, `current_calories_per_day`, `weight_goal`, `target_weight_kg`, `weight_change_rate` FROM `user_profiles` AS `UserProfile` WHERE `UserProfile`.`user_id` = '2';"}
+{"level":"info","message":"Executing (default): SELECT `user_id`, `username`, `email`, `password_hash`, `created_at`, `updated_at` FROM `users` AS `User` WHERE `User`.`email` = 'user1@gmail.com';"}
+{"level":"info","message":"Executing (default): SELECT `user_id`, `gender`, `date_of_birth`, `height_cm`, `weight_kg`, `dietary_preference`, `allergies`, `ethnicity`, `activity_level`, `current_calories_per_day`, `weight_goal`, `target_weight_kg`, `weight_change_rate` FROM `user_profiles` AS `UserProfile` WHERE `UserProfile`.`user_id` = 2;"}
+{"level":"info","message":"Executing (default): SELECT `user_id`, `gender`, `date_of_birth`, `height_cm`, `weight_kg`, `dietary_preference`, `allergies`, `ethnicity`, `activity_level`, `current_calories_per_day`, `weight_goal`, `target_weight_kg`, `weight_change_rate` FROM `user_profiles` AS `UserProfile` WHERE `UserProfile`.`user_id` = '2';"}
+{"level":"info","message":"Executing (default): SELECT `user_id`, `gender`, `date_of_birth`, `height_cm`, `weight_kg`, `dietary_preference`, `allergies`, `ethnicity`, `activity_level`, `current_calories_per_day`, `weight_goal`, `target_weight_kg`, `weight_change_rate` FROM `user_profiles` AS `UserProfile` WHERE `UserProfile`.`user_id` = '2';"}
+{"level":"info","message":"Executing (default): SELECT `user_id`, `gender`, `date_of_birth`, `height_cm`, `weight_kg`, `dietary_preference`, `allergies`, `ethnicity`, `activity_level`, `current_calories_per_day`, `weight_goal`, `target_weight_kg`, `weight_change_rate` FROM `user_profiles` AS `UserProfile` WHERE `UserProfile`.`user_id` = '2';"}
+{"level":"info","message":"Executing (default): UPDATE `user_profiles` SET `gender`=?,`date_of_birth`=?,`height_cm`=?,`weight_kg`=?,`dietary_preference`=?,`allergies`=?,`ethnicity`=?,`activity_level`=?,`current_calories_per_day`=?,`weight_goal`=?,`target_weight_kg`=?,`weight_change_rate`=? WHERE `user_id` = ?"}
+{"level":"info","message":"Server is running on port 3000"}
+{"level":"info","message":"Server is running on port 8080"}
+{"level":"info","message":"Server is running on port 3000"}
