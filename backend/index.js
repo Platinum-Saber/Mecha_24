@@ -37,20 +37,23 @@ const sequelize = new Sequelize(
 const User = require('./models/user.js')(sequelize, DataTypes);
 const MealPlan = require('./models/meal_plans.js')(sequelize, DataTypes);
 const FoodData = require('./models/food_data.js')(sequelize, DataTypes);
-const CalorieDiary = require('./models/calory_diary.js')(sequelize, DataTypes);
+const CalorieDiary = require('./models/calorie_diary.js')(sequelize, DataTypes);
 const UserProfile = require('./models/user_profiles.js')(sequelize, DataTypes);
+const Snack = require('./models/snacks.js')(sequelize, DataTypes);
 
 // Set up associations
 User.hasOne(UserProfile, { foreignKey: 'user_id', onDelete: 'CASCADE' });
 UserProfile.belongsTo(User, { foreignKey: 'user_id', onDelete: 'CASCADE' });
 User.hasMany(CalorieDiary, { foreignKey: 'user_id' });
 CalorieDiary.belongsTo(User, { foreignKey: 'user_id' });
-FoodData.hasMany(CalorieDiary, { foreignKey: 'food_id' });
-CalorieDiary.belongsTo(FoodData, { foreignKey: 'food_id' });
+CalorieDiary.belongsTo(MealPlan, { foreignKey: 'meal_id' });
+MealPlan.hasMany(CalorieDiary, { foreignKey: 'meal_id' });
 FoodData.hasMany(MealPlan, { as: 'Carb', foreignKey: 'carb_id' });
 FoodData.hasMany(MealPlan, { as: 'Protein', foreignKey: 'protein_id' });
-FoodData.hasMany(MealPlan, { as: 'Vitamin', foreignKey: 'vitamin_id' });
-FoodData.hasMany(MealPlan, { as: 'Snack', foreignKey: 'snack_id' });
+FoodData.hasMany(MealPlan, { as: 'Vegetable', foreignKey: 'vegetable_id' });
+FoodData.hasMany(MealPlan, { as: 'Other', foreignKey: 'other_id' });
+FoodData.hasOne(Snack, { foreignKey: 'snack_id' });
+Snack.belongsTo(FoodData, { foreignKey: 'snack_id' });
 
 const app = express();
 app.use(express.json());

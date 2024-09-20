@@ -11,78 +11,75 @@ class PlanDietPageGenerator extends StatelessWidget {
     var appState = context.watch<MyAppState>();
     return Scaffold(
       body: Center(
-          child: Column(
-        children: <Widget>[
-          const SizedBox(height: 50.0),
-          Padding(
-            padding: const EdgeInsets.all(2),
-            child: BigCard(
-              text_: appState.recCal,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  BigCard(text_: appState.recCal),
+                  const Text(
+                    "Recommended",
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const Text(
-            "Recommended",
-            style: TextStyle(fontSize: 12),
-          ),
-          const SizedBox(height: 50.0),
-          Padding(
-            padding: const EdgeInsets.all(3.0),
-            child: CustomElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const CustomMealPlanPage()),
-                );
-              },
-              buttonText: "",
-              image: '3',
+            Expanded(
+              flex: 2,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _buildButton(
+                    context,
+                    "Custom",
+                    '3',
+                    const CustomMealPlanPage(),
+                  ),
+                  _buildButton(
+                    context,
+                    "Generate",
+                    '10',
+                    const GenerateMealPlanPage(),
+                  ),
+                  _buildButton(
+                    context,
+                    "Prescription",
+                    '1',
+                    const PrescriptionMealPlanPage(),
+                  ),
+                ],
+              ),
             ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildButton(
+      BuildContext context, String text, String image, Widget page) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(3.0),
+          child: CustomElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => page),
+              );
+            },
+            buttonText: "",
+            image: image,
           ),
-          const Text(
-            "Custom",
-            style: TextStyle(fontSize: 16),
-          ),
-          const SizedBox(height: 30.0),
-          Padding(
-            padding: const EdgeInsets.all(3.0),
-            child: CustomElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const GenerateMealPlanPage()),
-                );
-              },
-              buttonText: "",
-              image: '10',
-            ),
-          ),
-          const Text(
-            "Generate",
-            style: TextStyle(fontSize: 16),
-          ),
-          const SizedBox(height: 30.0),
-          Padding(
-            padding: const EdgeInsets.all(3.0),
-            child: CustomElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const PrescriptionMealPlanPage()),
-                );
-              },
-              buttonText: "",
-              image: '1',
-            ),
-          ),
-          const Text(
-            "Prescription",
-            style: TextStyle(fontSize: 16),
-          ),
-        ],
-      )),
+        ),
+        Text(
+          text,
+          style: const TextStyle(fontSize: 16),
+        ),
+      ],
     );
   }
 }

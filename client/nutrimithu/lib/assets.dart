@@ -25,15 +25,13 @@ class CustomElevatedButton extends StatelessWidget {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           image: DecorationImage(
-            image: AssetImage(
-                'nutrimithu/lib/assets/$image.jpg'), // Replace with your image
+            image: AssetImage('assets/$image.jpg'),
             fit: BoxFit.cover,
-            //
           ),
         ),
         child: Container(
-          width: 300, // Replace with your desired width
-          height: 100, // Replace with your desired height
+          width: 300,
+          height: 100,
           alignment: Alignment.center,
           child: Text(buttonText),
         ),

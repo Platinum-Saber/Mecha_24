@@ -90,6 +90,20 @@ class MyAppState extends ChangeNotifier {
     _loadUserData();
   }
 
+  Future<void> initializeUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final storedUserId = prefs.getInt('userId');
+    if (storedUserId != null) {
+      userId = storedUserId;
+      notifyListeners();
+    }
+  }
+
+  void updateUserId(int newUserId) {
+    userId = newUserId;
+    notifyListeners();
+  }
+
   Future<void> _loadUserData() async {
     final prefs = await SharedPreferences.getInstance();
     final userJson = prefs.getString('user');

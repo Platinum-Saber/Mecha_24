@@ -11,8 +11,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     carb_id: DataTypes.INTEGER,
     protein_id: DataTypes.INTEGER,
-    vitamin_id: DataTypes.INTEGER,
-    snack_id: DataTypes.INTEGER
+    vegetable_id: DataTypes.INTEGER,
+    other_id: DataTypes.INTEGER
   }, {
     tableName: 'meal_plans',
     timestamps: false

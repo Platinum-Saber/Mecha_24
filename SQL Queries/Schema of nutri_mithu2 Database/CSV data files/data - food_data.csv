@@ -1,0 +1,159 @@
+food_id,name,cal_per_100g,type
+10001,Rice (Cooked),133,Carbohydrates
+10002,"Rice (polished, steamed)",133,Carbohydrates
+10003,Rice porridge (medium viscosity),64,Carbohydrates
+10004,"Rice (glutinous, polished, steamed)",228,Carbohydrates
+10005,"Rice (boiled, water 42%)",58,Carbohydrates
+10006,"Rice (white, cooked)",130,Carbohydrates
+10007,"Rice (brown, cooked)",111,Carbohydrates
+10008,"Rice (parboiled, cooked)",123,Carbohydrates
+10009,"Rice (Basmati, cooked)",121,Carbohydrates
+10010,"Rice (Jasmine, cooked)",129,Carbohydrates
+10011,"Rice (red, cooked)",123,Carbohydrates
+10012,"Rice (black, cooked)",135,Carbohydrates
+10013,Instant Noodles,457,Carbohydrates
+10014,"Noodles (rice, vermicelli, soaked)",166,Carbohydrates
+10015,"Noodles (rice, small size, fresh)",220,Carbohydrates
+10016,"Noodle (mungbean, soaked)",169,Carbohydrates
+10017,Potatoes (Boiled),80,Carbohydrates
+10018,Bread,230,Carbohydrates
+10019,Rice (White Boiled),120,Carbohydrates
+10020,Cornflakes with Milk,205,Carbohydrates
+10021,Wheat Bran,200,Carbohydrates
+10022,Bajra,360,Carbohydrates
+10023,Maize Flour,355,Carbohydrates
+10024,Wheat Flour,341,Carbohydrates
+10025,1 Medium Chapatti,238,Carbohydrates
+10026,1 Slice White Bread,240,Carbohydrates
+10027,1 Paratha (no filling),560,Carbohydrates
+10028,Sugar (1 tbsp),48,Carbohydrates
+10029,Honey (1 tbsp),90,Carbohydrates
+10030,Chinese Roll (100g),175,Carbohydrates
+10031,Dhal Wade (50g),200,Carbohydrates
+10032,1 Bun (50g),310,Carbohydrates
+10033,Chocolate Cake (40g),358,Carbohydrates
+10034,1 tbsp Pol Sambol,90,Carbohydrates
+10035,1 Slice of Pittu (50g),282,Carbohydrates
+10036,6 String Hoppers (75g),213,Carbohydrates
+10037,1 Thosai (50g),160,Carbohydrates
+10038,1 Pizza (100g),271,Carbohydrates
+10039,Medium Size Rotti (50g),342,Carbohydrates
+10040,1 Hopper (50g),100,Carbohydrates
+10041,Buttermilk,19,Carbohydrates
+10042,Millet (cooked),119,Carbohydrates
+10043,Sorghum (cooked),120,Carbohydrates
+10044,Barley (cooked),123,Carbohydrates
+10045,Corn (cooked),96,Carbohydrates
+10046,Polenta (cooked),70,Carbohydrates
+10047,Sweet Potatoes (cooked),90,Carbohydrates
+10048,Taro (cooked),142,Carbohydrates
+10049,Cassava (cooked),160,Carbohydrates
+10050,Yam (cooked),118,Carbohydrates
+10051,Arrowroot (cooked),100,Carbohydrates
+10052,Tapioca (cooked),98,Carbohydrates
+10053,Plantains (cooked),122,Carbohydrates
+20001,"Pork (tenderloin, raw)",116,Protein
+20002,"Pork (meatball, blanched)",140,Protein
+20003,"Pork (loin, whole, lean, raw)",149,Protein
+20004,"Pork (liver, raw)",124,Protein
+20005,"Pork (blood, cooked)",49,Protein
+20006,"Pork (spare ribs, raw)",208,Protein
+20007,"Pork (minced, raw)",229,Protein
+20008,"Fish (Striped snake-head, raw)",109,Protein
+20009,"Fish (Short-bodied mackerel, steamed)",137,Protein
+20010,"Fish (Short-bodied mackerel, raw)",122,Protein
+20011,"Fish (Nile tilapia, raw)",87,Protein
+20012,"Fish (Gunther’s walking catfish, raw)",209,Protein
+20013,"Fish (fermented/Pla-ra, liquid)",14,Protein
+20014,Fish (fermented/Pla-ra),102,Protein
+20015,"Fish (Batrachian walking catfish, raw)",117,Protein
+20016,"Egg (hen, whole, raw)",133,Protein
+20017,"Egg (hen, yolk, raw)",336,Protein
+20018,"Chicken (thigh, raw)",212,Protein
+20019,"Chicken (meat, raw)",186,Protein
+20020,"Chicken (liver, all classes, raw)",114,Protein
+20021,"Chicken (blood, cooked)",29,Protein
+20022,"Beef (meat, lean, raw)",145,Protein
+20023,"Beef (meatball, blanched)",84,Protein
+20024,"Squid (splendid, raw)",68,Protein
+20025,"Soybean curd (with egg, soft packed in pouch)",66,Protein
+20026,"Shrimp (small size, salted, dried, with shell)",263,Protein
+20027,"Shrimp (banana, raw)",82,Protein
+20028,Egg Omelet,240,Protein
+20029,Curd (100g),100,Protein
+20030,Cashew Nuts (28g),589,Protein
+20031,1 Tea Cup Boiled Green Gram (150g),107,Protein
+20032,1 Tea Cup Boiled Kadala (150g),117,Protein
+20033,Cheese,315,Protein
+20034,Milk Buffalo,115,Protein
+20035,Milk Cow,100,Protein
+20036,Oats (cooked),71,Protein
+20037,Quinoa (cooked),120,Protein
+20038,Amaranth (cooked),102,Protein
+20039,Buckwheat (cooked),92,Protein
+20040,Teff (cooked),104,Protein
+20041,Bulgur (cooked),83,Protein
+20042,Freekeh (cooked),101,Protein
+20043,Farro (cooked),120,Protein
+20044,Spelt (cooked),123,Protein
+20045,Rye (cooked),123,Protein
+20046,Lentils (cooked),116,Protein
+20047,Chickpeas (cooked),164,Protein
+20048,Kidney Beans (cooked),127,Protein
+20049,Black Beans (cooked),132,Protein
+20050,Mung Beans (cooked),105,Protein
+20051,Green Peas (cooked),81,Protein
+20052,Soybeans (cooked),173,Protein
+30001,Apple (100g),50,Vegetables
+30002,Banana,95,Vegetables
+30003,Grapes,60,Vegetables
+30004,Grapes Black,45,Vegetables
+30005,Orange,35,Vegetables
+30006,Orange Juice (100ml),47,Vegetables
+30007,Peach,50,Vegetables
+30008,Pineapple,46,Vegetables
+30009,Pears,51,Vegetables
+30010,Papaya,32,Vegetables
+30011,Lychees,61,Vegetables
+30012,"Cabbage (Chinese, white, raw)",12,Vegetables
+30013,Cabbage (raw),23,Vegetables
+30014,Cabbage (Boiled),10,Vegetables
+30015,Chinese convolvulus (raw),20,Vegetables
+30016,"Cabbage (Chinese/PAI TSAI, raw)",20,Vegetables
+30017,Cauliflower (raw),28,Vegetables
+30018,Cauliflower (Boiled),10,Vegetables
+30019,Carrot (raw),32,Vegetables
+30020,Carrot (Boiled),20,Vegetables
+30021,Celery,16,Vegetables
+30022,Cucumber (Raw),10,Vegetables
+30023,Green beans (raw),31,Vegetables
+30024,Green beans (Boiled),24,Vegetables
+30025,"Kale (Chinese, raw)",21,Vegetables
+30026,Lettuce,21,Vegetables
+30027,"Mushroom (straw, raw)",31,Vegetables
+30028,Mushroom,18,Vegetables
+30029,Onion (raw),26,Vegetables
+30030,Onion,50,Vegetables
+30031,Peas (Boiled),50,Vegetables
+30032,Spinach,23,Vegetables
+30033,Tomato (raw),23,Vegetables
+30034,Tomato juice (100ml),22,Vegetables
+30035,Avocado Pear,190,Vegetables
+30036,Broccoli,25,Vegetables
+30037,Brinjal,24,Vegetables
+30038,Fenugreek (Methi),49,Vegetables
+30039,French beans,26,Vegetables
+30040,Guava,44,Vegetables
+30041,"Papaya (unripe, raw)",25,Vegetables
+30042,Papaya (ripe),39,Vegetables
+30043,Pineapple,59,Vegetables
+30044,Watermelon,24,Vegetables
+30045,Rambutan,73,Vegetables
+30046,Kiwi Fruit,45,Vegetables
+30047,Peach,50,Vegetables
+30048,Pears,51,Vegetables
+30049,Strawberry,77,Vegetables
+30050,Pomegranate,77,Vegetables
+30051,Mangoes,70,Vegetables
+30052,Cherries,50,Vegetables
+30053,Dates,281,Vegetables

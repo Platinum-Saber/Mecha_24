@@ -28,15 +28,16 @@ class _ProfilePageState extends State<ProfilePageGenerator> {
     final response = await http.get(
       Uri.parse('http://10.0.2.2:3000/user-profile/${appState.userId}'),
     );
-
+    print(response.statusCode);
     if (response.statusCode == 200) {
       final profileData = json.decode(response.body);
       appState.updateProfileFromJson(profileData);
-      //print(profileData);
+      print(profileData);
 
       // Update SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       final userJson = prefs.getString('user');
+      print(userJson);
 
       print(userJson);
       if (userJson != null) {

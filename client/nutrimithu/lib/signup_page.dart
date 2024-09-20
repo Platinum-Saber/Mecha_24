@@ -57,6 +57,7 @@ class _SignUpPageState extends State<SignUpPage> {
           // Update the app state
           final appState = Provider.of<MyAppState>(context, listen: false);
           appState.updateProfileFromJson(user);
+          appState.updateUserId(user['id']);
 
           // Navigate to FirstTimeLoginPage
           Navigator.pushReplacement(

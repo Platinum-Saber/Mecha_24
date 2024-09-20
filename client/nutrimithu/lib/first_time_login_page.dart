@@ -155,6 +155,12 @@ class _FirstTimeLoginPageState extends State<FirstTimeLoginPage> {
       final userData = jsonDecode(userJson);
       Provider.of<MyAppState>(context, listen: false)
           .updateProfileFromJson(userData);
+
+      // Update userId in MyAppState
+      if (userData['id'] != null) {
+        Provider.of<MyAppState>(context, listen: false)
+            .updateUserId(userData['id']);
+      }
     }
   }
 
@@ -178,8 +184,15 @@ class _FirstTimeLoginPageState extends State<FirstTimeLoginPage> {
             final userData = jsonDecode(userJson);
             userData.addAll(profileData);
             await prefs.setString('user', jsonEncode(userData));
+
+            // Update userId in SharedPreferences
+            await prefs.setInt('userId', int.parse(widget.userId));
           }
-          context.read<MyAppState>().updateProfileFromJson(profileData);
+
+          var appState = context.read<MyAppState>();
+          appState.updateProfileFromJson(profileData);
+          appState.updateUserId(int.parse(widget.userId));
+
           Navigator.pushReplacementNamed(context, '/home');
         } else {
           ScaffoldMessenger.of(context).showSnackBar(

@@ -4,9 +4,25 @@ import 'package:provider/provider.dart';
 import 'assets.dart';
 import 'main.dart';
 import 'package:pie_chart/pie_chart.dart';
+import 'image_preloader.dart';
 
-class HomePageGenerator extends StatelessWidget {
+class HomePageGenerator extends StatefulWidget {
   const HomePageGenerator({super.key});
+
+  @override
+  State<HomePageGenerator> createState() => _HomePageGeneratorState();
+}
+
+class _HomePageGeneratorState extends State<HomePageGenerator> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _preloadImages();
+  }
+
+  Future<void> _preloadImages() async {
+    await ImagePreloader.preloadImages(context);
+  }
 
   @override
   Widget build(BuildContext context) {
