@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       unique: true
     },
     type: {
-      type: DataTypes.ENUM('carb', 'protein', 'vegetable', 'snack'),
+      type: DataTypes.ENUM('carb', 'protein', 'vegetable'),
       allowNull: false
     },
     calories_per_100g: {

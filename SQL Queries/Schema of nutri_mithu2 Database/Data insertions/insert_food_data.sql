@@ -670,12 +670,6 @@ VALUES (
         'vegetable'
     ),
     (
-        30008,
-        'Pineapple',
-        46,
-        'vegetable'
-    ),
-    (
         30009,
         'Pears',
         51,
@@ -901,18 +895,6 @@ VALUES (
         30046,
         'Kiwi Fruit',
         45,
-        'vegetable'
-    ),
-    (
-        30047,
-        'Peach',
-        50,
-        'vegetable'
-    ),
-    (
-        30048,
-        'Pears',
-        51,
         'vegetable'
     ),
     (
