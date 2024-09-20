@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'dart:convert';
+import 'package:provider/provider.dart';
 import 'main.dart';
 import 'login_page.dart';
+import 'first_time_login_page.dart';
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -43,10 +47,28 @@ class _SignUpPageState extends State<SignUpPage> {
       );
 
       if (response.statusCode == 201) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const ProfilePage()),
-        );
+        final responseData = jsonDecode(response.body);
+        final user = responseData['user'];
+        if (user != null && user['id'] != null) {
+          // Store user data in SharedPreferences
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('user', jsonEncode(user));
+
+          // Update the app state
+          final appState = Provider.of<MyAppState>(context, listen: false);
+          appState.updateProfileFromJson(user);
+
+          // Navigate to FirstTimeLoginPage
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  FirstTimeLoginPage(userId: user['id'].toString()),
+            ),
+          );
+        } else {
+          throw Exception('User ID is null');
+        }
       } else {
         final responseData = jsonDecode(response.body);
         setState(() {

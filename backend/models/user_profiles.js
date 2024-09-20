@@ -6,40 +6,40 @@ module.exports = (sequelize, DataTypes) => {
       },
       gender: {
         type: DataTypes.ENUM('male', 'female', 'other'),
-        allowNull: false
+        allowNull: true
       },
       date_of_birth: {
         type: DataTypes.DATEONLY,
-        allowNull: false
+        allowNull: true
       },
       height_cm: {
         type: DataTypes.DECIMAL(5, 2),
-        allowNull: false
+        allowNull: true
       },
       weight_kg: {
         type: DataTypes.DECIMAL(5, 2),
-        allowNull: false
+        allowNull: true
       },
       dietary_preference: {
         type: DataTypes.ENUM('vegetarian', 'non_vegetarian', 'vegan'),
-        allowNull: false
+        allowNull: true
       },
       allergies: DataTypes.TEXT,
       ethnicity: {
         type: DataTypes.ENUM('sri_lankan', 'south_asian', 'asian', 'non_asian'),
-        allowNull: false
+        allowNull: true
       },
       activity_level: {
         type: DataTypes.ENUM('light', 'moderate', 'active', 'very_active'),
-        allowNull: false
+        allowNull: true
       },
       current_calories_per_day: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: true
       },
       weight_goal: {
         type: DataTypes.ENUM('maintain', 'lose', 'gain'),
-        allowNull: false
+        allowNull: true
       },
       target_weight_kg: DataTypes.DECIMAL(5, 2),
       weight_change_rate: DataTypes.ENUM('0', '200', '400', '600', '800')
@@ -47,6 +47,13 @@ module.exports = (sequelize, DataTypes) => {
       tableName: 'user_profiles',
       timestamps: false
     });
+
+    UserProfile.associate = (models) => {
+      UserProfile.belongsTo(models.User, {
+        foreignKey: 'user_id',
+        onDelete: 'CASCADE'
+      });
+    };
   
     return UserProfile;
   };

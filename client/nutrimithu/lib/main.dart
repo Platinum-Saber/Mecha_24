@@ -3,7 +3,7 @@ import 'package:nutrimithu/login_page.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert';
-
+import 'signup_page.dart';
 import 'home_page.dart';
 import 'profile_page.dart';
 import 'plan_diet_page.dart';
@@ -27,7 +27,12 @@ class MyApp extends StatelessWidget {
               seedColor: const Color.fromARGB(255, 125, 167, 255)),
           useMaterial3: true,
         ),
-        home: const LoginPage(),
+        initialRoute: '/login',
+        routes: {
+          '/login': (context) => const LoginPage(),
+          '/signup': (context) => const SignUpPage(),
+          '/home': (context) => const MyHomePage(),
+        },
       ),
     );
   }
@@ -81,6 +86,19 @@ class MyAppState extends ChangeNotifier {
   double targetWeightKg = 0;
   String weightChangeRate = '0';
 
+  MyAppState() {
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userJson = prefs.getString('user');
+    if (userJson != null) {
+      final userData = jsonDecode(userJson);
+      updateProfileFromJson(userData);
+    }
+  }
+
   void updateProfileFromJson(Map<String, dynamic> json) {
     userId = json['user_id'] ?? userId;
     username = json['username'] ?? username;
@@ -90,17 +108,25 @@ class MyAppState extends ChangeNotifier {
     dateOfBirth = json['date_of_birth'] != null
         ? DateTime.parse(json['date_of_birth'])
         : dateOfBirth;
-    height = json['height_cm']?.toDouble() ?? height;
-    weight = json['weight_kg']?.toDouble() ?? weight;
+    height = json['height_cm'] != null
+        ? double.parse(json['height_cm'].toString())
+        : height;
+    weight = json['weight_kg'] != null
+        ? double.parse(json['weight_kg'].toString())
+        : weight;
     dietaryPreference = json['dietary_preference'] ?? dietaryPreference;
     allergies = json['allergies'] ?? allergies;
     ethnicity = json['ethnicity'] ?? ethnicity;
     activityLevel = json['activity_level'] ?? activityLevel;
-    currentCaloriesPerDay =
-        json['current_calories_per_day'] ?? currentCaloriesPerDay;
+    currentCaloriesPerDay = json['current_calories_per_day'] != null
+        ? int.parse(json['current_calories_per_day'].toString())
+        : currentCaloriesPerDay;
     weightGoal = json['weight_goal'] ?? weightGoal;
-    targetWeightKg = json['target_weight_kg']?.toDouble() ?? targetWeightKg;
-    weightChangeRate = json['weight_change_rate'] ?? weightChangeRate;
+    targetWeightKg = json['target_weight_kg'] != null
+        ? double.parse(json['target_weight_kg'].toString())
+        : targetWeightKg;
+    weightChangeRate =
+        json['weight_change_rate']?.toString() ?? weightChangeRate;
     notifyListeners();
   }
 
@@ -199,20 +225,6 @@ class MyAppState extends ChangeNotifier {
   set setWeightChangeRate(String value) {
     weightChangeRate = value;
     notifyListeners();
-  }
-
-  MyAppState() {
-    _loadUserName();
-  }
-
-  Future<void> _loadUserName() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userJson = prefs.getString('user');
-    if (userJson != null) {
-      final userData = jsonDecode(userJson);
-      name = userData['name'] ?? 'Guest';
-      notifyListeners();
-    }
   }
 
   void resetState() {

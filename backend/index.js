@@ -41,8 +41,8 @@ const CalorieDiary = require('./models/calory_diary.js')(sequelize, DataTypes);
 const UserProfile = require('./models/user_profiles.js')(sequelize, DataTypes);
 
 // Set up associations
-User.hasOne(UserProfile, { foreignKey: 'user_id' });
-UserProfile.belongsTo(User, { foreignKey: 'user_id' });
+User.hasOne(UserProfile, { foreignKey: 'user_id', onDelete: 'CASCADE' });
+UserProfile.belongsTo(User, { foreignKey: 'user_id', onDelete: 'CASCADE' });
 User.hasMany(CalorieDiary, { foreignKey: 'user_id' });
 CalorieDiary.belongsTo(User, { foreignKey: 'user_id' });
 FoodData.hasMany(CalorieDiary, { foreignKey: 'food_id' });
@@ -187,12 +187,55 @@ async function handleUpdateUserProfile(req, res) {
     res.status(500).json({ error: 'Error updating user profile', details: error.message });
   }
 }
+
+
+async function handleDeleteUser(req, res) {
+  const userId = req.params.userId;
+  try {
+    // Start a transaction
+    const result = await sequelize.transaction(async (t) => {
+      // First, delete the user profile
+      await UserProfile.destroy({
+        where: { user_id: userId },
+        transaction: t
+      });
+
+      // Then, delete the user
+      const deletedUser = await User.destroy({
+        where: { user_id: userId },
+        transaction: t
+      });
+
+      if (deletedUser === 0) {
+        throw new Error('User not found');
+      }
+
+      // If you have other related data, delete them here
+      // For example:
+      // await CalorieDiary.destroy({ where: { user_id: userId }, transaction: t });
+      // await MealPlan.destroy({ where: { user_id: userId }, transaction: t });
+
+      return deletedUser;
+    });
+    logger.info(`User deleted successfully: ${userId}`);
+    res.status(200).json({ message: 'User deleted successfully' });
+  } catch (error) {
+    if (error.message === 'User not found') {
+      logger.warn(`Attempt to delete non-existent user: ${userId}`);
+      return res.status(404).json({ error: 'User not found' });
+    }
+    logger.error('Error deleting user:', error);
+    res.status(500).json({ error: 'Error deleting user', details: error.message });
+  }
+}
+
+
 // Routes
 app.post('/register', validateRegistrationInput, handleRegistration);
 app.post('/login', validateLoginInput, handleLogin);
 app.get('/user-profile/:userId', handleGetUserProfile);
 app.put('/user-profile/:userId', handleUpdateUserProfile);
-
+app.delete('/user/:userId', handleDeleteUser);
 
 // Start the server
 const PORT = process.env.PORT || 8080;

@@ -106,7 +106,7 @@ CREATE TABLE `user_profiles` (
     FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`)
 );
 
-DELIMITER //
+DELIMITER / /
 
 CREATE TRIGGER after_user_insert
 AFTER INSERT ON users
@@ -116,4 +116,52 @@ BEGIN
   VALUES (NEW.user_id);
 END //
 
-DELIMITER ;
+DELIMITER;
+
+DROP TRIGGER IF EXISTS after_user_insert;
+
+DELIMITER / /
+
+CREATE TRIGGER after_user_insert
+AFTER INSERT ON users
+FOR EACH ROW
+BEGIN
+  INSERT INTO user_profiles (
+    user_id,
+    gender,
+    date_of_birth,
+    height_cm,
+    weight_kg,
+    dietary_preference,
+    allergies,
+    ethnicity,
+    activity_level,
+    current_calories_per_day,
+    weight_goal,
+    target_weight_kg,
+    weight_change_rate,
+    bmi
+  ) VALUES (
+    NEW.user_id,
+    'other',  -- Enum: keeping previous value
+    CURDATE(),  -- Current date as default
+    0,
+    0,
+    'non_vegetarian',  -- Enum: keeping previous value
+    'not set',
+    'sri_lankan',  -- Enum: keeping previous value
+    'moderate',  -- Enum: keeping previous value
+    0,
+    'maintain',  -- Enum: keeping previous value
+    0,
+    '0',  -- Enum: keeping previous value
+    NULL  -- Calculated field, keeping as NULL
+  );
+END //
+
+DELIMITER;
+
+ALTER TABLE user_profiles DROP FOREIGN KEY user_profiles_ibfk_1;
+
+ALTER TABLE user_profiles
+ADD CONSTRAINT user_profiles_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE;

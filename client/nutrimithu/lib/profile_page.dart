@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'main.dart';
@@ -31,6 +32,18 @@ class _ProfilePageState extends State<ProfilePageGenerator> {
     if (response.statusCode == 200) {
       final profileData = json.decode(response.body);
       appState.updateProfileFromJson(profileData);
+      //print(profileData);
+
+      // Update SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      final userJson = prefs.getString('user');
+
+      print(userJson);
+      if (userJson != null) {
+        final userData = jsonDecode(userJson);
+        userData.addAll(profileData);
+        await prefs.setString('user', jsonEncode(userData));
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Failed to load user profile')),
@@ -88,6 +101,8 @@ class _ProfilePageState extends State<ProfilePageGenerator> {
               _weightGoal(),
               _targetWeight(),
               _weightChangeRate(),
+              const SizedBox(height: 20),
+              _deleteUserButton(),
             ],
           ),
         ),
@@ -337,5 +352,63 @@ class _ProfilePageState extends State<ProfilePageGenerator> {
         enabled: _isEditing,
       ),
     );
+  }
+
+  Widget _deleteUserButton() {
+    return ElevatedButton(
+      onPressed: _showDeleteConfirmation,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: Colors.red,
+        foregroundColor: Colors.white,
+      ),
+      child: const Text('Delete User'),
+    );
+  }
+
+  void _showDeleteConfirmation() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Confirm Deletion'),
+          content: const Text(
+              'Are you sure you want to delete your account? This action cannot be undone.'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text('Delete'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                _deleteUser();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _deleteUser() async {
+    var appState = context.read<MyAppState>();
+    final response = await http.delete(
+      Uri.parse('http://10.0.2.2:3000/user/${appState.userId}'),
+    );
+
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('User deleted successfully')),
+      );
+      // Navigate to login page or clear app state
+      Navigator.of(context).pushReplacementNamed('/login'); // Adjust as needed
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to delete user')),
+      );
+    }
   }
 }
