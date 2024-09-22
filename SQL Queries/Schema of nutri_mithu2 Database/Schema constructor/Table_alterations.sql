@@ -1,7 +1,5 @@
 USE nutri_mithu2;
 
-ALTER TABLE `snacks` DROP FOREIGN KEY `snack_id`;
-
 DROP TABLE IF EXISTS `snacks`;
 
 CREATE TABLE `snacks` (
@@ -9,3 +7,6 @@ CREATE TABLE `snacks` (
     `name` VARCHAR(50) NOT NULL UNIQUE,
     `calories_per_serving` DECIMAL(10, 2) NOT NULL
 );
+
+ALTER TABLE meal_plans
+ADD COLUMN proportion DECIMAL(5, 2) NOT NULL DEFAULT 1.00;

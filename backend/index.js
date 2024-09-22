@@ -232,6 +232,46 @@ async function handleDeleteUser(req, res) {
   }
 }
 
+async function handleGetMeals(req, res) {
+  try {
+    const meals = await sequelize.query(
+      `SELECT 
+        meal_id, 
+        CONCAT(
+          carb_name, ', ', 
+          prot_name, ', ', 
+          vegi_name,
+          CASE WHEN other_name != 'None' THEN CONCAT(', ', other_name) ELSE '' END
+        ) AS name,
+        ROUND(calc_carb_calorie + calc_prot_calorie + calc_vegi_calorie + calc_other_calorie) AS calories
+      FROM meals
+      ORDER BY RAND()
+      LIMIT 15`,
+      {
+        type: sequelize.QueryTypes.SELECT
+      }
+    );
+
+    console.log('Fetched meals:', meals); // Add this line
+
+    // Group meals into breakfast, lunch, dinner, and snacks
+    const mealPlan = {
+      breakfast: meals.slice(0, 3),
+      lunch: meals.slice(3, 6),
+      dinner: meals.slice(6, 9),
+      snack1: meals.slice(9, 12),
+      snack2: meals.slice(12, 15)
+    };
+
+    console.log('Grouped meal plan:', JSON.stringify(mealPlan, null, 2)); // Add this line
+
+    res.json(mealPlan);
+  } catch (error) {
+    logger.error('Error fetching meals:', error);
+    res.status(500).json({ error: 'Error fetching meals', details: error.message });
+  }
+}
+
 
 // Routes
 app.post('/register', validateRegistrationInput, handleRegistration);
@@ -239,6 +279,7 @@ app.post('/login', validateLoginInput, handleLogin);
 app.get('/user-profile/:userId', handleGetUserProfile);
 app.put('/user-profile/:userId', handleUpdateUserProfile);
 app.delete('/user/:userId', handleDeleteUser);
+app.get('/meals', handleGetMeals);
 
 // Start the server
 const PORT = process.env.PORT || 8080;

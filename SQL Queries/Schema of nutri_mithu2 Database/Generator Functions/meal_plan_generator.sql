@@ -47,7 +47,7 @@ BEGIN
     END WHILE;
 END //
 
-DELIMITER;
+DELIMITER ;
 
 -- Call the procedure to generate 10 meal plans
 CALL generate_meal_plans ();

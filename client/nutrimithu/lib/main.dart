@@ -53,6 +53,8 @@ class MyAppState extends ChangeNotifier {
     notifyListeners();
   }
 
+  Map<String, String> selectedMealPlan = {};
+
   var breakfast = <String>{}.toSet();
   var snack1 = <String>{}.toSet();
   var lunch = <String>{}.toSet();

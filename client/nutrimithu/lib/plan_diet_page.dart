@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'assets.dart';
 import 'main.dart';
+import 'meal_selection_page.dart';
 
 class PlanDietPageGenerator extends StatelessWidget {
   const PlanDietPageGenerator({super.key});
@@ -244,6 +245,12 @@ class _GenerateMealPlanPageState extends State<GenerateMealPlanPageGenerator> {
             ElevatedButton(
               onPressed: () {
                 print('Generate meal plan');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          MealSelectionPage(appState: appState)),
+                );
               },
               child: const Text('Generate', style: TextStyle(fontSize: 16)),
             ),
