@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'assets.dart';
-import 'main.dart';
+import '../../Resources/assets.dart';
+import '../../App/app.dart';
 import 'meal_selection_page.dart';
+import '../../App/my_home_page.dart';
 
 class PlanDietPageGenerator extends StatelessWidget {
   const PlanDietPageGenerator({super.key});

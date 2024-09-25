@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'dart:convert';
-import 'main.dart';
+import '../App/app.dart';
 
 class FirstTimeLoginPage extends StatefulWidget {
   final String userId;

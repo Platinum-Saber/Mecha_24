@@ -13,6 +13,11 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
+// Ensure shared_preferences_android has the correct build directory
+project(':shared_preferences_android') {
+    buildDir = "${rootProject.buildDir}/shared_preferences_android"
+}
+
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }

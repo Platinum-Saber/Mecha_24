@@ -1,29 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
-
 import 'dart:convert';
 import 'package:provider/provider.dart';
-import 'main.dart';
-import 'login_page.dart';
-import 'first_time_login_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../App/my_home_page.dart';
+import '../App/app.dart';
+import 'signup_page.dart';
 
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
-  _SignUpPageState createState() => _SignUpPageState();
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
+class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController nameController = TextEditingController();
   bool isLoading = false;
   String errorMessage = '';
 
-  Future<void> signUp() async {
+  Future<void> login() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -35,45 +33,37 @@ class _SignUpPageState extends State<SignUpPage> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/register'),
+        Uri.parse('http://10.0.2.2:3000/login'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: jsonEncode(<String, String>{
-          'name': nameController.text,
           'email': emailController.text,
           'password': passwordController.text,
         }),
       );
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         final responseData = jsonDecode(response.body);
         final user = responseData['user'];
-        if (user != null && user['id'] != null) {
-          // Store user data in SharedPreferences
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setString('user', jsonEncode(user));
 
-          // Update the app state
-          final appState = Provider.of<MyAppState>(context, listen: false);
-          appState.updateProfileFromJson(user);
-          appState.updateUserId(user['id']);
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('user', jsonEncode(user));
 
-          // Navigate to FirstTimeLoginPage
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  FirstTimeLoginPage(userId: user['id'].toString()),
-            ),
-          );
-        } else {
-          throw Exception('User ID is null');
-        }
+        final appState = Provider.of<MyAppState>(context, listen: false);
+        appState.userId = user['user_id'];
+        appState.setUsername = user['username'];
+        appState.setEmail = user['email'];
+
+        await _fetchUserProfile(appState);
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MyHomePage()),
+        );
       } else {
-        final responseData = jsonDecode(response.body);
         setState(() {
-          errorMessage = responseData['error'] ?? 'Error registering user';
+          errorMessage = 'Invalid email or password';
         });
       }
     } catch (e) {
@@ -87,17 +77,28 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
+  Future<void> _fetchUserProfile(MyAppState appState) async {
+    try {
+      final response = await http.get(
+        Uri.parse('http://10.0.2.2:3000/user-profile/${appState.userId}'),
+      );
+
+      if (response.statusCode == 200) {
+        final profileData = json.decode(response.body);
+        appState.updateProfileFromJson(profileData);
+      } else {
+        print('Failed to fetch user profile');
+      }
+    } catch (e) {
+      print('Error fetching user profile: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sign Up'),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pushReplacement(
-            MaterialPageRoute(builder: (context) => LoginPage()),
-          ),
-        ),
+        title: const Text('Login'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -105,16 +106,6 @@ class _SignUpPageState extends State<SignUpPage> {
           key: _formKey,
           child: Column(
             children: [
-              TextFormField(
-                controller: nameController,
-                decoration: const InputDecoration(labelText: 'Name'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter your name';
-                  }
-                  return null;
-                },
-              ),
               TextFormField(
                 controller: emailController,
                 decoration: const InputDecoration(labelText: 'Email'),
@@ -135,10 +126,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 obscureText: true,
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a password';
-                  }
-                  if (value.length < 6) {
-                    return 'Password must be at least 6 characters long';
+                    return 'Please enter your password';
                   }
                   return null;
                 },
@@ -148,15 +136,18 @@ class _SignUpPageState extends State<SignUpPage> {
                 const CircularProgressIndicator()
               else
                 ElevatedButton(
-                  onPressed: signUp,
-                  child: const Text('Sign Up'),
+                  onPressed: login,
+                  child: const Text('Login'),
                 ),
               const SizedBox(height: 10),
               TextButton(
-                onPressed: () => Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => LoginPage()),
-                ),
-                child: const Text('Back to Login'),
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SignUpPage()),
+                  );
+                },
+                child: const Text("Don't have an account? Sign Up"),
               ),
               if (errorMessage.isNotEmpty)
                 Padding(

@@ -1,10 +1,11 @@
 // import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'assets.dart';
-import 'main.dart';
+import '../../Resources/assets.dart';
+import '../../App/app.dart';
 import 'package:pie_chart/pie_chart.dart';
-import 'image_preloader.dart';
+import '../../Resources/image_preloader.dart';
+import '../../App/my_home_page.dart';
 
 class HomePageGenerator extends StatefulWidget {
   const HomePageGenerator({super.key});

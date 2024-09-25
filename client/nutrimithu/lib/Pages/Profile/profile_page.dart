@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'main.dart';
+import '../../App/app.dart';
 
 class ProfilePageGenerator extends StatefulWidget {
   const ProfilePageGenerator({Key? key}) : super(key: key);
