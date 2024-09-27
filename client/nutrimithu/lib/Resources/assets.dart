@@ -366,15 +366,15 @@ class _CustomDropDownBoxState extends State<CustomDropDownBox> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const SizedBox(width: 20),
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(
-            widget.prefixText,
-            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-        ),
-        const SizedBox(width: 10),
+        // const SizedBox(width: 20),
+        // Padding(
+        //   padding: const EdgeInsets.all(8.0),
+        //   child: Text(
+        //     widget.prefixText,
+        //     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        //   ),
+        // ),
+        // const SizedBox(width: 10),
         Expanded(
           child: SingleChildScrollView(
             child: Autocomplete<String>(
@@ -410,19 +410,19 @@ class _CustomDropDownBoxState extends State<CustomDropDownBox> {
           ),
         ),
         const SizedBox(width: 5),
-        ElevatedButton(
-          // Step 2: Create an add button
-          child: const Text('Add'),
-          onPressed: () {
-            setState(() {
-              if (_controller.text != '') {
-                widget.mealItems.add(_controller.text);
-                _controller.clear();
-              }
-            });
-            _controller.clear(); // Clear the text field
-          },
-        ),
+        // ElevatedButton(
+        //   // Step 2: Create an add button
+        //   child: const Text('Add'),
+        //   onPressed: () {
+        //     setState(() {
+        //       if (_controller.text != '') {
+        //         widget.mealItems.add(_controller.text);
+        //         _controller.clear();
+        //       }
+        //     });
+        //     _controller.clear(); // Clear the text field
+        //   },
+        // ),
       ],
     );
   }
@@ -656,42 +656,129 @@ class _CustomExpandingWidget extends State<CustomExpandingWidget> {
                 );
               },
               body: Container(
-                color: Colors.grey[100],
-                child: Column(
-                  children: <Widget>[
-                    CustomTextInputBox(
-                        placeholder: widget.units,
-                        prefixText: 'Total Amount',
-                        fontSize1: 18,
-                        onChanged: (value) {
-                          setState(() {
-                            widget.amount.value = double.parse(value);
-                          });
-                        }),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    CustomDropDownBox(
-                      placeholder: 'choose item',
-                      prefixText: 'Food Item          ',
-                      suggestions: widget.suggestions,
-                      onChanged: widget.onChanged,
-                      mealItems: widget.mealItems,
-                    ),
-                    ...widget.mealItems.map(
-                      (item) => SmallCard(
-                        text_: item,
-                        onPressed: () {
-                          setState(() {
-                            widget.mealItems.remove(item);
-                            print(widget.mealItems);
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+                child: (widget.listTitle == 'Breakfast' ||
+                        widget.listTitle == 'Lunch' ||
+                        widget.listTitle == 'Dinner')
+                    ? Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            TextField(
+                              // obscureText: true,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Enter amount',
+                                suffix: Text(widget.units),
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  widget.amount.value = double.parse(value);
+                                });
+                              },
+                            ),
+                            SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomDropDownBox(
+                                    placeholder: 'Carbohydrate',
+                                    prefixText: 'Carbohydrate    ',
+                                    suggestions: widget.suggestions,
+                                    onChanged: widget.onChanged,
+                                    mealItems: widget.mealItems,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: CustomDropDownBox(
+                                    placeholder: 'Protein',
+                                    prefixText: 'Protein               ',
+                                    suggestions: widget.suggestions,
+                                    onChanged: widget.onChanged,
+                                    mealItems: widget.mealItems,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 10),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: CustomDropDownBox(
+                                    placeholder: 'Vegetable',
+                                    prefixText: 'Vegetable    ',
+                                    suggestions: widget.suggestions,
+                                    onChanged: widget.onChanged,
+                                    mealItems: widget.mealItems,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: CustomDropDownBox(
+                                    placeholder: 'Vegetable',
+                                    prefixText: 'Vegetable               ',
+                                    suggestions: widget.suggestions,
+                                    onChanged: widget.onChanged,
+                                    mealItems: widget.mealItems,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      )
+                    : Column(children: [
+                        SizedBox(height: 10),
+                        Row(children: [
+                          SizedBox(width: 8),
+                          Expanded(
+                              child: CustomDropDownBox(
+                            placeholder: 'Choose Snack',
+                            prefixText: 'Snack',
+                            suggestions: widget.suggestions,
+                            onChanged: widget.onChanged,
+                            mealItems: widget.mealItems,
+                          )),
+                          SizedBox(width: 8),
+                        ]),
+                        SizedBox(height: 10),
+                      ]),
               ),
+              // body: Container(
+              //   color: Colors.grey[100],
+              //   child: Column(
+              //     children: <Widget>[
+              //       CustomTextInputBox(
+              //           placeholder: widget.units,
+              //           prefixText: 'Total Amount',
+              //           fontSize1: 18,
+              //           onChanged: (value) {
+              //             setState(() {
+              //               widget.amount.value = double.parse(value);
+              //             });
+              //           }),
+              //       const SizedBox(
+              //         height: 5,
+              //       ),
+              //       CustomDropDownBox(
+              //         placeholder: 'choose item',
+              //         prefixText: 'Food Item          ',
+              //         suggestions: widget.suggestions,
+              //         onChanged: widget.onChanged,
+              //         mealItems: widget.mealItems,
+              //       ),
+              //       ...widget.mealItems.map(
+              //         (item) => SmallCard(
+              //           text_: item,
+              //           onPressed: () {
+              //             setState(() {
+              //               widget.mealItems.remove(item);
+              //               print(widget.mealItems);
+              //             });
+              //           },
+              //         ),
+              //       ),
+              //     ],
+              //   ),
+              // ),
               isExpanded: _isExpanded,
             ),
           ],
