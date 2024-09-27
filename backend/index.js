@@ -232,6 +232,27 @@ async function handleDeleteUser(req, res) {
   }
 }
 
+async function handleGetSnacks(res,req) {
+  try{
+    const snacks = await sequelize.query(
+      `SELECT snack_id, name, calories_per_serving as calories
+      FROM snacks
+      ORDER BY RAND()
+      LIMIT 15`,
+      {
+        type: sequelize.QueryTypes.SELECT
+      }
+    );
+
+    console.log('Fetched snacks:', snacks);
+    return snacks; // Add this line
+
+  } catch (error) {
+    logger.error('Error fetching snacks:', error);
+    res.status(500).json({ error: 'Error fetching snacks', details: error.message });
+  }
+}
+
 async function handleGetMeals(req, res) {
   try {
     const meals = await sequelize.query(
@@ -253,22 +274,79 @@ async function handleGetMeals(req, res) {
     );
 
     console.log('Fetched meals:', meals); // Add this line
-
+    const snacks = await handleGetSnacks();
     // Group meals into breakfast, lunch, dinner, and snacks
     const mealPlan = {
       breakfast: meals.slice(0, 3),
       lunch: meals.slice(3, 6),
       dinner: meals.slice(6, 9),
-      snack1: meals.slice(9, 12),
-      snack2: meals.slice(12, 15)
+      snack1: snacks.slice(0, 3),
+      snack2: snacks.slice(3, 6)
     };
 
     console.log('Grouped meal plan:', JSON.stringify(mealPlan, null, 2)); // Add this line
 
     res.json(mealPlan);
+
   } catch (error) {
     logger.error('Error fetching meals:', error);
     res.status(500).json({ error: 'Error fetching meals', details: error.message });
+  }
+}
+
+async function handleGetCalorieDiary(res,req) {
+  try{
+    const userId = req.params.userId;
+    const date = req.query.date;
+    const calorieDieryBreakfastRecord = await sequelize.query(
+      `SELECT m.carb_name, m.prot_name, m.vegi_name, c.total_calories, m.calc_carb_calorie, m.calc_prot_calorie, m.calc_vegi_calorie
+      FROM calorie_diary c
+      JOIN meals m ON c.meal_id = m.meal_id
+      WHERE c.user_id = ${userId} AND  AND c.meal_time = 'breakfast'`,
+      {
+        type: sequelize.QueryTypes.SELECT
+      }
+    );
+    const calorieDieryLunchRecord = await sequelize.query(
+      `SELECT m.carb_name, m.prot_name, m.vegi_name, c.total_calories, m.calc_carb_calorie, m.calc_prot_calorie, m.calc_vegi_calorie
+      FROM calorie_diary c
+      JOIN meals m ON c.meal_id = m.meal_id
+      WHERE c.user_id = ${userId} AND c.meal_time = 'lunch'`,
+      {
+        type: sequelize.QueryTypes.SELECT
+      }
+    );
+    const calorieDieryDinnerRecord = await sequelize.query(
+      `SELECT m.carb_name, m.prot_name, m.vegi_name, c.total_calories, m.calc_carb_calorie, m.calc_prot_calorie, m.calc_vegi_calorie
+      FROM calorie_diary c
+      JOIN meals m ON c.meal_id = m.meal_id
+      WHERE c.user_id = ${userId} AND c.meal_time = 'dinner'`,
+      {
+        type: sequelize.QueryTypes.SELECT
+      }
+    );
+    const calorieDierySnack1Record = await sequelize.query(
+      `SELECT s.name, c.total_calories
+      FROM calorie_diary c
+      JOIN snacks s ON c.snack_id = s.snack_id
+      WHERE c.user_id = ${userId} AND c.meal_time = 'snack1'`,
+      {
+        type: sequelize.QueryTypes.SELECT
+      }
+    );
+    const calorieDierySnack2Record = await sequelize.query(
+      `SELECT s.name, c.total_calories
+      FROM calorie_diary c
+      JOIN snacks s ON c.snack_id = s.snack_id
+      WHERE c.user_id = ${userId} AND c.meal_time = 'snack2'`,
+      {
+        type: sequelize.QueryTypes.SELECT
+      }
+    );
+  
+  }catch(error){
+    logger.error('Error fetching calorie diary:', error);
+    res.status(500).json({ error: 'Error fetching calorie diary', details: error.message });
   }
 }
 
@@ -280,7 +358,9 @@ app.get('/user-profile/:userId', handleGetUserProfile);
 app.put('/user-profile/:userId', handleUpdateUserProfile);
 app.delete('/user/:userId', handleDeleteUser);
 app.get('/meals', handleGetMeals);
-
+app.get('/calorie-diary/:userId', handleGetCalorieDiary);
+//app.post('/calorie-diary', handleAddCalorieDiary);
+ 
 // Start the server
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
