@@ -319,9 +319,12 @@ class PackMyMealPageState extends State<PackMyMealPageGenerator> {
                 const SizedBox(height: 16.0),
                 _showFoodBox(appState),
                 const SizedBox(height: 16.0),
-                _isNutriScale ? _showScale(appState) : _showDividers(appState),
-                // const SizedBox(height: 16.0),
+                _showScale(appState),
+                // _isNutriScale ? _showScale(appState) : _showDividers(appState),
+                const SizedBox(height: 16.0),
                 _confirmationButton(appState),
+                // Text(appState.breakfast
+                //     .toString()), //to check if it gets updated.
               ],
             ),
           ),
@@ -364,13 +367,13 @@ class PackMyMealPageState extends State<PackMyMealPageGenerator> {
           child: Icon(_isEditing ? Icons.done : Icons.edit),
         ),
         // BackButton(),
-        TextButton(
-            onPressed: () {
-              setState(() {
-                _isNutriScale = !_isNutriScale;
-              });
-            },
-            child: Text(_isNutriScale ? ' Use Box  ' : 'Use Scale')),
+        // TextButton(
+        //     onPressed: () {
+        //       setState(() {
+        //         _isNutriScale = !_isNutriScale;
+        //       });
+        //     },
+        //     child: Text(_isNutriScale ? ' Use Box  ' : 'Use Scale')),
       ],
     );
   }
@@ -417,34 +420,66 @@ class PackMyMealPageState extends State<PackMyMealPageGenerator> {
     );
   }
 
-  Widget _showScale(apps) {
-    return Card.outlined(
-      child: Container(
-        width: 400,
-        padding: const EdgeInsets.all(16.0),
-        child: const Column(
-          // mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Start serving your meal!',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 18,
-              ),
-            ),
-            SizedBox(
-              height: 200,
-              width: 400,
-              child: Placeholder(
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Widget _showScale(apps) {
+  //   void _navigateToPrevious() {
+  //     (apps.foodItemIndex>0)? setState(() {
+  //       apps.foodItemIndex = (apps.foodItemIndex - 1) % 4;
+  //     }): null;
+  //   }
+
+  //   void _navigateToNext() {
+  //   setState(() {
+  //     apps.foodItemIndex = (apps.foodItemIndex + 1) % 4;
+  //   });
+  // }
+
+  //   var _currentIndex = apps.foodItemIndex;
+
+  //   return Card.outlined(
+  //     child: Container(
+  //       width: 400,
+  //       padding: const EdgeInsets.all(16.0),
+  //       child: const Column(
+  //         // mainAxisSize: MainAxisSize.max,
+  //         crossAxisAlignment: CrossAxisAlignment.start,
+  //         children: [
+  //           Text(
+  //             'Start serving your meal!',
+  //             style: TextStyle(
+  //               color: Colors.grey,
+  //               fontSize: 18,
+  //             ),
+  //           ),
+  //           SizedBox(
+  //             height: 200,
+  //             width: 400,
+  //             child: Row(
+  //               mainAxisAlignment: MainAxisAlignment.center,
+  //               children: [
+  //                 IconButton(
+  //                   onPressed:  _navigateToPrevious,
+  //                   icon: Icon(Icons.arrow_back),
+  //                 ),
+  //                 Expanded(
+  //                   child: Center(
+  //                     child: Text(
+  //                       apps.breakfast[_currentIndex],
+  //                       style: TextStyle(fontSize: 24.0),
+  //                     ),
+  //                   ),
+  //                 ),
+  //                 IconButton(
+  //                   onPressed: _currentIndex < 4 - 1 ? _navigateToNext : null,
+  //                   icon: Icon(Icons.arrow_forward),
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
   Widget _showDividers(apps) {
     return Card.outlined(
@@ -490,6 +525,92 @@ class PackMyMealPageState extends State<PackMyMealPageGenerator> {
           ),
         ),
         child: Text('Completed ${apps.mealToPack}!'),
+      ),
+    );
+  }
+
+  Widget _showScale(MyAppState apps) {
+    return BreakfastItemsWidget(
+      items: ['rice', 'dhal', 'carrot', 'spinnach'],
+      currentIndex: apps.foodItemIndex,
+      onPrevious: () {
+        setState(() {
+          apps.foodItemIndex = (apps.foodItemIndex - 1) % apps.breakfast.length;
+        });
+      },
+      onNext: () {
+        setState(() {
+          apps.foodItemIndex = (apps.foodItemIndex + 1) % apps.breakfast.length;
+        });
+      },
+    );
+  }
+}
+
+class BreakfastItemsWidget extends StatefulWidget {
+  final List<String> items;
+  final int currentIndex;
+  final VoidCallback onPrevious;
+  final VoidCallback onNext;
+
+  BreakfastItemsWidget({
+    required this.items,
+    required this.currentIndex,
+    required this.onPrevious,
+    required this.onNext,
+  });
+
+  @override
+  _BreakfastItemsWidgetState createState() => _BreakfastItemsWidgetState();
+}
+
+class _BreakfastItemsWidgetState extends State<BreakfastItemsWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return Card.outlined(
+      child: Container(
+        width: 400,
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Start serving your meal!',
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 18,
+              ),
+            ),
+            SizedBox(
+              height: 200,
+              width: 400,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  IconButton(
+                    onPressed:
+                        widget.currentIndex > 0 ? widget.onPrevious : null,
+                    icon: Icon(Icons.arrow_back),
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: Text(
+                        widget.items[widget.currentIndex],
+                        style: TextStyle(fontSize: 24.0),
+                      ),
+                    ),
+                  ),
+                  IconButton(
+                    onPressed: widget.currentIndex < widget.items.length - 1
+                        ? widget.onNext
+                        : null,
+                    icon: Icon(Icons.arrow_forward),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
