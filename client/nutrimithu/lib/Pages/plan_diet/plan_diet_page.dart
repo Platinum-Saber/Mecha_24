@@ -340,7 +340,9 @@ class _CustomMealPlanPageState extends State<CustomMealPlanPageGenerator> {
               suggestions: foodItems,
               onChanged: (value) {
                 setState(() {
-                  print(appState.breakfast);
+                  // appState.mealCals[0] = double.parse(value);
+                  // appState.breakfast.add(value);
+                  // print(appState.breakfast);
                 });
                 // Print the list
               },

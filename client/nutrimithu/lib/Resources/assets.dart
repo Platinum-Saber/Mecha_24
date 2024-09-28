@@ -667,12 +667,17 @@ class _CustomExpandingWidget extends State<CustomExpandingWidget> {
                               // obscureText: true,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
-                                labelText: 'Enter amount',
+                                labelText: (widget.amount.value == 0)
+                                    ? 'Enter amount'
+                                    : widget.amount.value.toString() +
+                                        ' ' +
+                                        widget.units,
                                 suffix: Text(widget.units),
                               ),
                               onChanged: (value) {
                                 setState(() {
                                   widget.amount.value = double.parse(value);
+                                  // appState.mealCals[appState.mealIndex] = double.parse(value);
                                 });
                               },
                             ),
