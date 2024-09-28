@@ -54,7 +54,7 @@ class MyAppState extends ChangeNotifier {
 
   int foodItemIndex = 0;
 
-  Map<String, String> selectedMealPlan = {};
+  Map<String, dynamic> selectedMealPlan = {};
   //these are the variables to store today's meal plan
   var todayBreakfast = [];
   var todaySnack1 = [];

@@ -3,7 +3,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../App/app.dart';
-import '../../Resources/assets.dart';
 
 class MealSelectionPage extends StatefulWidget {
   final MyAppState appState;
@@ -15,7 +14,7 @@ class MealSelectionPage extends StatefulWidget {
 }
 
 class _MealSelectionPageState extends State<MealSelectionPage> {
-  Map<String, String> selectedMeals = {};
+  Map<String, dynamic> selectedMeals = {};
   Map<String, List<Map<String, dynamic>>> mealOptions = {};
 
   @override
@@ -125,6 +124,9 @@ class _MealSelectionPageState extends State<MealSelectionPage> {
       return;
     }
 
+    // Print selectedMeals before filtering
+    print('Selected Meals before filtering: $selectedMeals');
+
     final filteredMeals = Map.fromEntries(
       selectedMeals.entries.where((entry) => entry.value != 'null'),
     );
@@ -133,6 +135,12 @@ class _MealSelectionPageState extends State<MealSelectionPage> {
     await prefs.setString('selectedMealPlan', json.encode(filteredMeals));
 
     widget.appState.selectedMealPlan = filteredMeals;
+
+    // Print statements to verify the meal plan data
+    print('User ID: ${widget.appState.userId}');
+    print('Filtered Meals: $filteredMeals');
+    print('Meal Calories: ${widget.appState.mealCals}');
+    print('Selected Meal Plan: ${widget.appState.selectedMealPlan}');
 
     try {
       final response = await http.post(
@@ -146,6 +154,11 @@ class _MealSelectionPageState extends State<MealSelectionPage> {
       );
 
       if (response.statusCode == 201) {
+        print('User ID: ${widget.appState.userId}');
+        print('Filtered Meals: $filteredMeals');
+        print('Meal Calories: ${widget.appState.mealCals}');
+        print('Selected Meal Plan: ${widget.appState.selectedMealPlan}');
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Meal plan saved successfully')),
         );
@@ -161,5 +174,108 @@ class _MealSelectionPageState extends State<MealSelectionPage> {
         SnackBar(content: Text('Error saving meal plan')),
       );
     }
+  }
+}
+
+class MealSelectionWidget extends StatelessWidget {
+  final String mealType;
+  final List<Map<String, dynamic>> mealOptions;
+  final String? selectedMealId;
+  final Function(String) onMealSelected;
+
+  const MealSelectionWidget({
+    Key? key,
+    required this.mealType,
+    required this.mealOptions,
+    required this.selectedMealId,
+    required this.onMealSelected,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text(
+            mealType,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ),
+        if (mealOptions.isEmpty)
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text('Loading meals...'),
+          )
+        else
+          ...mealOptions.map((meal) {
+            return MealTile(
+              title: meal['name'],
+              calories: meal['calories'].toString(),
+              isSelected: selectedMealId == meal['meal_id'].toString(),
+              onTap: () {
+                onMealSelected(meal['meal_id'].toString());
+              },
+            );
+          }).toList(),
+        SizedBox(height: 16),
+      ],
+    );
+  }
+}
+
+class MealTile extends StatelessWidget {
+  final String title;
+  final String calories;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const MealTile({
+    Key? key,
+    required this.title,
+    required this.calories,
+    required this.isSelected,
+    required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 2,
+      margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: EdgeInsets.all(12),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style:
+                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 4),
+                    Text(
+                      '$calories calories',
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                isSelected ? Icons.check_circle : Icons.circle_outlined,
+                color: isSelected ? Colors.green : Colors.grey,
+                size: 24,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -235,7 +235,7 @@ async function handleDeleteUser(req, res) {
 async function handleGetSnacks(res,req) {
   try{
     const snacks = await sequelize.query(
-      `SELECT snack_id, name, calories_per_serving as calories
+      `SELECT snack_id AS meal_id, name, calories_per_serving as calories
       FROM snacks
       ORDER BY RAND()
       LIMIT 15`,
@@ -264,7 +264,7 @@ async function handleGetMeals(req, res) {
           vegi_name,
           CASE WHEN other_name != 'None' THEN CONCAT(', ', other_name) ELSE '' END
         ) AS name,
-        ROUND(calc_carb_calorie + calc_prot_calorie + calc_vegi_calorie + calc_other_calorie) AS calories
+        ROUND(calc_carb_calorie + calc_prot_calorie + calc_vegi_calorie) AS calories
       FROM meals
       ORDER BY RAND()
       LIMIT 15`,
