@@ -40,7 +40,9 @@ class MyAppState extends ChangeNotifier {
   var units = <bool>[false, false, false];
   var recCal = "1800";
   var total = "0000";
+
   var mealCals = <double>[0, 0, 0, 0, 0];
+
   String mealToPack = '';
   int _mealIndex = 0;
 

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../App/app.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../App/app.dart';
+import '../../Resources/assets.dart';
 
 class MealSelectionPage extends StatefulWidget {
   final MyAppState appState;
@@ -29,9 +30,6 @@ class _MealSelectionPageState extends State<MealSelectionPage> {
         Uri.parse('http://10.0.2.2:3000/meals'),
       );
 
-      print('Response status code: ${response.statusCode}');
-      print('Response body: ${response.body}');
-
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
         setState(() {
@@ -43,7 +41,6 @@ class _MealSelectionPageState extends State<MealSelectionPage> {
             'Dinner': List<Map<String, dynamic>>.from(data['dinner']),
           };
         });
-        print('Parsed meal options: $mealOptions');
       } else {
         print('Failed to load meals. Status code: ${response.statusCode}');
       }
@@ -58,11 +55,56 @@ class _MealSelectionPageState extends State<MealSelectionPage> {
       appBar: AppBar(title: Text('Select Meals')),
       body: ListView(
         children: [
-          _buildMealSection('Breakfast', widget.appState.mealCals[0]),
-          _buildMealSection('Snack 1', widget.appState.mealCals[1]),
-          _buildMealSection('Lunch', widget.appState.mealCals[2]),
-          _buildMealSection('Snack 2', widget.appState.mealCals[3]),
-          _buildMealSection('Dinner', widget.appState.mealCals[4]),
+          MealSelectionWidget(
+            mealType: 'Breakfast',
+            mealOptions: mealOptions['Breakfast'] ?? [],
+            selectedMealId: selectedMeals['Breakfast'],
+            onMealSelected: (mealId) {
+              setState(() {
+                selectedMeals['Breakfast'] = mealId;
+              });
+            },
+          ),
+          MealSelectionWidget(
+            mealType: 'Snack 1',
+            mealOptions: mealOptions['Snack 1'] ?? [],
+            selectedMealId: selectedMeals['Snack 1'],
+            onMealSelected: (mealId) {
+              setState(() {
+                selectedMeals['Snack 1'] = mealId;
+              });
+            },
+          ),
+          MealSelectionWidget(
+            mealType: 'Lunch',
+            mealOptions: mealOptions['Lunch'] ?? [],
+            selectedMealId: selectedMeals['Lunch'],
+            onMealSelected: (mealId) {
+              setState(() {
+                selectedMeals['Lunch'] = mealId;
+              });
+            },
+          ),
+          MealSelectionWidget(
+            mealType: 'Snack 2',
+            mealOptions: mealOptions['Snack 2'] ?? [],
+            selectedMealId: selectedMeals['Snack 2'],
+            onMealSelected: (mealId) {
+              setState(() {
+                selectedMeals['Snack 2'] = mealId;
+              });
+            },
+          ),
+          MealSelectionWidget(
+            mealType: 'Dinner',
+            mealOptions: mealOptions['Dinner'] ?? [],
+            selectedMealId: selectedMeals['Dinner'],
+            onMealSelected: (mealId) {
+              setState(() {
+                selectedMeals['Dinner'] = mealId;
+              });
+            },
+          ),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
@@ -75,39 +117,6 @@ class _MealSelectionPageState extends State<MealSelectionPage> {
     );
   }
 
-  Widget _buildMealSection(String mealType, double calories) {
-    final meals = mealOptions[mealType] ?? [];
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text(mealType,
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        ),
-        if (meals.isEmpty)
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('Loading meals...'),
-          )
-        else
-          ...meals.map((meal) => CustomMealTile(
-                title: meal['name'],
-                calories: meal['calories'].toString(),
-                isSelected:
-                    selectedMeals[mealType] == meal['meal_id'].toString(),
-                onTap: () {
-                  setState(() {
-                    selectedMeals[mealType] = meal['meal_id'].toString();
-                  });
-                },
-              )),
-        SizedBox(height: 16),
-      ],
-    );
-  }
-
   Future<void> _saveMealPlan() async {
     if (selectedMeals.length != 5) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -116,69 +125,41 @@ class _MealSelectionPageState extends State<MealSelectionPage> {
       return;
     }
 
-    // Store selected meal IDs locally
+    final filteredMeals = Map.fromEntries(
+      selectedMeals.entries.where((entry) => entry.value != 'null'),
+    );
+
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('selectedMealPlan', json.encode(selectedMeals));
+    await prefs.setString('selectedMealPlan', json.encode(filteredMeals));
 
-    widget.appState.selectedMealPlan = selectedMeals;
-    Navigator.pop(context);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Meal plan saved successfully')),
-    );
-  }
-}
+    widget.appState.selectedMealPlan = filteredMeals;
 
-class CustomMealTile extends StatelessWidget {
-  final String title;
-  final String calories;
-  final bool isSelected;
-  final VoidCallback onTap;
+    try {
+      final response = await http.post(
+        Uri.parse('http://10.0.2.2:3000/save-meal-plan'),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({
+          'userId': widget.appState.userId,
+          'mealPlan': filteredMeals,
+          'mealCals': widget.appState.mealCals
+        }),
+      );
 
-  const CustomMealTile({
-    Key? key,
-    required this.title,
-    required this.calories,
-    required this.isSelected,
-    required this.onTap,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-      child: InkWell(
-        onTap: onTap,
-        child: Padding(
-          padding: EdgeInsets.all(12),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      '$calories calories',
-                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-                    ),
-                  ],
-                ),
-              ),
-              Icon(
-                isSelected ? Icons.check_circle : Icons.circle_outlined,
-                color: isSelected ? Colors.green : Colors.grey,
-                size: 24,
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+      if (response.statusCode == 201) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Meal plan saved successfully')),
+        );
+        Navigator.pop(context);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to save meal plan')),
+        );
+      }
+    } catch (e) {
+      print('Error saving meal plan: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error saving meal plan')),
+      );
+    }
   }
 }

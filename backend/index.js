@@ -296,57 +296,125 @@ async function handleGetMeals(req, res) {
 
 async function handleGetCalorieDiary(res,req) {
   try{
-    const userId = req.params.userId;
-    const date = req.query.date;
+    const { userId, date } = req.params;
+    
     const calorieDieryBreakfastRecord = await sequelize.query(
       `SELECT m.carb_name, m.prot_name, m.vegi_name, c.total_calories, m.calc_carb_calorie, m.calc_prot_calorie, m.calc_vegi_calorie
       FROM calorie_diary c
       JOIN meals m ON c.meal_id = m.meal_id
-      WHERE c.user_id = ${userId} AND  AND c.meal_time = 'breakfast'`,
+      WHERE c.user_id = ${userId} AND  AND c.meal_time = 'breakfast', c.date = ${date}`,
       {
         type: sequelize.QueryTypes.SELECT
       }
     );
+    console.log('Fetched breakfast:', calorieDieryBreakfastRecord);
+
     const calorieDieryLunchRecord = await sequelize.query(
       `SELECT m.carb_name, m.prot_name, m.vegi_name, c.total_calories, m.calc_carb_calorie, m.calc_prot_calorie, m.calc_vegi_calorie
       FROM calorie_diary c
       JOIN meals m ON c.meal_id = m.meal_id
-      WHERE c.user_id = ${userId} AND c.meal_time = 'lunch'`,
+      WHERE c.user_id = ${userId} AND c.meal_time = 'lunch', c.date = ${date}`,
       {
         type: sequelize.QueryTypes.SELECT
       }
     );
+    console.log('Fetched lunch:', calorieDieryLunchRecord);
+
     const calorieDieryDinnerRecord = await sequelize.query(
       `SELECT m.carb_name, m.prot_name, m.vegi_name, c.total_calories, m.calc_carb_calorie, m.calc_prot_calorie, m.calc_vegi_calorie
       FROM calorie_diary c
       JOIN meals m ON c.meal_id = m.meal_id
-      WHERE c.user_id = ${userId} AND c.meal_time = 'dinner'`,
+      WHERE c.user_id = ${userId} AND c.meal_time = 'dinner', c.date = ${date}`,
       {
         type: sequelize.QueryTypes.SELECT
       }
     );
+    console.log('Fetched dinner:', calorieDieryDinnerRecord);
+
     const calorieDierySnack1Record = await sequelize.query(
       `SELECT s.name, c.total_calories
       FROM calorie_diary c
       JOIN snacks s ON c.snack_id = s.snack_id
-      WHERE c.user_id = ${userId} AND c.meal_time = 'snack1'`,
+      WHERE c.user_id = ${userId} AND c.meal_time = 'snack1', c.date = ${date}`,
       {
         type: sequelize.QueryTypes.SELECT
       }
     );
+    console.log('Fetched snack1:', calorieDierySnack1Record);
+
     const calorieDierySnack2Record = await sequelize.query(
       `SELECT s.name, c.total_calories
       FROM calorie_diary c
       JOIN snacks s ON c.snack_id = s.snack_id
-      WHERE c.user_id = ${userId} AND c.meal_time = 'snack2'`,
+      WHERE c.user_id = ${userId} AND c.meal_time = 'snack2' AND c.date = ${date}`,
       {
         type: sequelize.QueryTypes.SELECT
       }
     );
+    console.log('Fetched snack2:', calorieDierySnack2Record);
   
   }catch(error){
     logger.error('Error fetching calorie diary:', error);
     res.status(500).json({ error: 'Error fetching calorie diary', details: error.message });
+  }
+}
+
+async function handleAddCalorieDiary(req, res) {
+  const { userId, date, mealTime, mealId, snackId, totalCalories } = req.body;
+
+  try {
+    const calorieDiary = await CalorieDiary.create({
+      user_id: userId,
+      date,
+      meal_time: mealTime,
+      meal_id: mealId,
+      snack_id: snackId,
+      total_calories: totalCalories
+    });
+
+    logger.info('Calorie diary added successfully:', calorieDiary.calorie_diary_id);
+    res.status(201).json({ message: 'Calorie diary added successfully' });
+
+  } catch (error) {
+    logger.error('Error adding calorie diary:', error);
+    res.status(500).json({ error: 'Error adding calorie diary', details: error.message });
+  }
+}
+
+
+async function handleSaveMealPlan(req, res) {
+  const { userId, mealPlan, mealCals } = req.body;
+
+  try {
+    const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+    console.log('Data to be posted:', userId, mealPlan, mealCals, currentDate);
+
+    // Filter out entries with null meal_id
+    const validMealEntries = Object.entries(mealPlan).filter(([mealType, mealId]) => mealId !== 'null');
+
+    // Insert each valid meal into the calorie_diary table
+    const promises = validMealEntries.map(async ([mealType, mealId], index) => {
+      try {
+        await CalorieDiary.create({
+          user_id: userId,
+          date: currentDate,
+          meal_type: mealType.toLowerCase().replace(' ', '_'), // Convert meal type to match ENUM values
+          meal_id: mealId,
+          total_calories: mealCals[index], // Use the corresponding mealCals value
+          state: 'pending'
+        });
+      } catch (error) {
+        logger.error(`Error inserting meal plan entry for ${mealType}:`, error);
+        throw error;
+      }
+    });
+
+    await Promise.all(promises);
+
+    res.status(201).json({ message: 'Meal plan saved successfully' });
+  } catch (error) {
+    logger.error('Error saving meal plan:', error);
+    res.status(500).json({ error: 'Error saving meal plan', details: error.message });
   }
 }
 
@@ -358,8 +426,9 @@ app.get('/user-profile/:userId', handleGetUserProfile);
 app.put('/user-profile/:userId', handleUpdateUserProfile);
 app.delete('/user/:userId', handleDeleteUser);
 app.get('/meals', handleGetMeals);
-app.get('/calorie-diary/:userId', handleGetCalorieDiary);
-//app.post('/calorie-diary', handleAddCalorieDiary);
+app.get('/calorie-diary/:userId/:date', handleGetCalorieDiary);
+app.post('/calorie-diary', handleAddCalorieDiary);
+app.post('/save-meal-plan', handleSaveMealPlan);
  
 // Start the server
 const PORT = process.env.PORT || 8080;
