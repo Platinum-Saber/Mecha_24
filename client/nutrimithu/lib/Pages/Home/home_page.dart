@@ -458,7 +458,7 @@ class PackMyMealPageState extends State<PackMyMealPageGenerator> {
   Widget _showFoodBox(apps) {
     //remove hardcode these to get actual data
     Map<String, double> dataMap = {
-      "Carbs": 4,
+      "Carb": 4,
       "Protien": 4,
       "Vegetables": 8,
     };
@@ -488,75 +488,14 @@ class PackMyMealPageState extends State<PackMyMealPageGenerator> {
         //   fontWeight: FontWeight.bold,
         // ),
       ),
-      chartValuesOptions: const ChartValuesOptions(
-        showChartValueBackground: true,
-        showChartValues: true,
-        showChartValuesInPercentage: false,
-        showChartValuesOutside: false,
-      ),
+      // chartValuesOptions: const ChartValuesOptions(
+      //   showChartValueBackground: false,
+      //   showChartValues: true,
+      //   showChartValuesInPercentage: false,
+      //   showChartValuesOutside: false,
+      // ),
     );
   }
-
-  // Widget _showScale(apps) {
-  //   void _navigateToPrevious() {
-  //     (apps.foodItemIndex>0)? setState(() {
-  //       apps.foodItemIndex = (apps.foodItemIndex - 1) % 4;
-  //     }): null;
-  //   }
-
-  //   void _navigateToNext() {
-  //   setState(() {
-  //     apps.foodItemIndex = (apps.foodItemIndex + 1) % 4;
-  //   });
-  // }
-
-  //   var _currentIndex = apps.foodItemIndex;
-
-  //   return Card.outlined(
-  //     child: Container(
-  //       width: 400,
-  //       padding: const EdgeInsets.all(16.0),
-  //       child: const Column(
-  //         // mainAxisSize: MainAxisSize.max,
-  //         crossAxisAlignment: CrossAxisAlignment.start,
-  //         children: [
-  //           Text(
-  //             'Start serving your meal!',
-  //             style: TextStyle(
-  //               color: Colors.grey,
-  //               fontSize: 18,
-  //             ),
-  //           ),
-  //           SizedBox(
-  //             height: 200,
-  //             width: 400,
-  //             child: Row(
-  //               mainAxisAlignment: MainAxisAlignment.center,
-  //               children: [
-  //                 IconButton(
-  //                   onPressed:  _navigateToPrevious,
-  //                   icon: Icon(Icons.arrow_back),
-  //                 ),
-  //                 Expanded(
-  //                   child: Center(
-  //                     child: Text(
-  //                       apps.breakfast[_currentIndex],
-  //                       style: TextStyle(fontSize: 24.0),
-  //                     ),
-  //                   ),
-  //                 ),
-  //                 IconButton(
-  //                   onPressed: _currentIndex < 4 - 1 ? _navigateToNext : null,
-  //                   icon: Icon(Icons.arrow_forward),
-  //                 ),
-  //               ],
-  //             ),
-  //           ),
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 
   Widget _showDividers(apps) {
     return Card.outlined(
@@ -608,16 +547,18 @@ class PackMyMealPageState extends State<PackMyMealPageGenerator> {
 
   Widget _showScale(MyAppState apps) {
     return BreakfastItemsWidget(
+      // items: apps.breakfast.toList(), //get the list of values
       items: ['rice', 'dhal', 'carrot', 'spinnach'],
       currentIndex: apps.foodItemIndex,
       onPrevious: () {
         setState(() {
-          apps.foodItemIndex = (apps.foodItemIndex - 1) % apps.breakfast.length;
+          apps.foodItemIndex = (apps.foodItemIndex - 1) %
+              4; // 4 is the length of appState.breakfast. alter it for variable lengths.
         });
       },
       onNext: () {
         setState(() {
-          apps.foodItemIndex = (apps.foodItemIndex + 1) % apps.breakfast.length;
+          apps.foodItemIndex = (apps.foodItemIndex + 1) % 4;
         });
       },
     );
