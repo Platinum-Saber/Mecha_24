@@ -4,6 +4,7 @@ import '../../Resources/assets.dart';
 import '../../App/app.dart';
 import 'meal_selection_page.dart';
 import '../../App/my_home_page.dart';
+import 'dart:ui';
 
 class PlanDietPageGenerator extends StatelessWidget {
   const PlanDietPageGenerator({super.key});
@@ -12,50 +13,66 @@ class PlanDietPageGenerator extends StatelessWidget {
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  BigCard(text_: appState.recCal),
-                  const Text(
-                    "Recommended",
-                    style: TextStyle(fontSize: 12),
-                  ),
-                ],
-              ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          Image.asset(
+            'assets/bg.png',
+            fit: BoxFit.cover,
+            // height: 120,
+          ),
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+            child: Container(
+              color: Colors.white.withOpacity(0.8),
             ),
-            Expanded(
-              flex: 2,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _buildButton(
-                    context,
-                    "Custom",
-                    '3',
-                    const CustomMealPlanPage(),
+          ),
+          Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      BigCard(text_: appState.recCal),
+                      const Text(
+                        "Recommended",
+                        style: TextStyle(fontSize: 12),
+                      ),
+                    ],
                   ),
-                  _buildButton(
-                    context,
-                    "Generate",
-                    '10',
-                    const GenerateMealPlanPage(),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildButton(
+                        context,
+                        "Custom",
+                        '3',
+                        const CustomMealPlanPage(),
+                      ),
+                      _buildButton(
+                        context,
+                        "Generate",
+                        '10',
+                        const GenerateMealPlanPage(),
+                      ),
+                      _buildButton(
+                        context,
+                        "Prescription",
+                        '1',
+                        const PrescriptionMealPlanPage(),
+                      ),
+                    ],
                   ),
-                  _buildButton(
-                    context,
-                    "Prescription",
-                    '1',
-                    const PrescriptionMealPlanPage(),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

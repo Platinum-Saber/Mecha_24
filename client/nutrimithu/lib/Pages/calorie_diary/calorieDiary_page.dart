@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../App/app.dart';
 import '../../Resources/assets.dart';
+import 'dart:ui';
 
 class CalorieDiaryPageGenerator extends StatefulWidget {
   const CalorieDiaryPageGenerator({super.key});
@@ -34,43 +35,61 @@ class _CalorieDiaryPageState extends State<CalorieDiaryPageGenerator> {
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 30.0),
-            CustomCalendar(
-              onDaySelected: (selectedDay, focusedDay) {
-                setState(() {});
-              },
+      body: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          Image.asset(
+            'assets/bg.png',
+            fit: BoxFit.cover,
+            // height: 120,
+          ),
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+            child: Container(
+              color: Colors.white.withOpacity(0.8),
             ),
-            const SizedBox(height: 60.0),
-            CustomExpandingWidgetVer3(
-                listTitle: 'Breakfast', units: 'Calories', pairList: itemList),
-            const SizedBox(
-              height: 20,
+          ),
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                const SizedBox(height: 30.0),
+                CustomCalendar(
+                  onDaySelected: (selectedDay, focusedDay) {
+                    setState(() {});
+                  },
+                ),
+                const SizedBox(height: 60.0),
+                CustomExpandingWidgetVer3(
+                    listTitle: 'Breakfast',
+                    units: 'Calories',
+                    pairList: itemList),
+                const SizedBox(
+                  height: 20,
+                ),
+                CustomExpandingWidgetVer3(
+                    listTitle: 'Snack', units: 'Calories', pairList: itemList),
+                const SizedBox(
+                  height: 20,
+                ),
+                CustomExpandingWidgetVer3(
+                    listTitle: 'Lunch', units: 'Calories', pairList: itemList),
+                const SizedBox(
+                  height: 20,
+                ),
+                CustomExpandingWidgetVer3(
+                    listTitle: 'Snack', units: 'Calories', pairList: itemList),
+                const SizedBox(
+                  height: 20,
+                ),
+                CustomExpandingWidgetVer3(
+                    listTitle: 'Dinner', units: 'Calories', pairList: itemList),
+                const SizedBox(
+                  height: 20,
+                ),
+              ],
             ),
-            CustomExpandingWidgetVer3(
-                listTitle: 'Snack', units: 'Calories', pairList: itemList),
-            const SizedBox(
-              height: 20,
-            ),
-            CustomExpandingWidgetVer3(
-                listTitle: 'Lunch', units: 'Calories', pairList: itemList),
-            const SizedBox(
-              height: 20,
-            ),
-            CustomExpandingWidgetVer3(
-                listTitle: 'Snack', units: 'Calories', pairList: itemList),
-            const SizedBox(
-              height: 20,
-            ),
-            CustomExpandingWidgetVer3(
-                listTitle: 'Dinner', units: 'Calories', pairList: itemList),
-            const SizedBox(
-              height: 20,
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

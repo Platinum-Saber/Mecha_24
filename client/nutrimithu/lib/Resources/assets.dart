@@ -567,11 +567,11 @@ class _CustomCalendarState extends State<CustomCalendar> {
       },
       calendarStyle: CalendarStyle(
         selectedDecoration: BoxDecoration(
-          color: Colors.blue[600],
+          color: Colors.green[600],
           shape: BoxShape.circle,
         ),
         todayDecoration: BoxDecoration(
-          color: Colors.blue[200],
+          color: Colors.green[200],
           shape: BoxShape.circle,
         ),
         defaultDecoration: const BoxDecoration(
@@ -927,12 +927,13 @@ class _CustomExpandingWidgetVer3 extends State<CustomExpandingWidgetVer3> {
             },
             children: [
               ExpansionPanel(
-                backgroundColor: Colors.lightBlue[50],
+                // backgroundColor: Colors.lightBlue[50],
+                backgroundColor: Colors.grey.shade200,
                 headerBuilder: (BuildContext context, bool isExpanded) {
                   return Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: Colors.blue,
+                      color: Colors.green.shade200,
                     ),
                     child: ListTile(
                       title: Text(widget.listTitle),
@@ -942,7 +943,8 @@ class _CustomExpandingWidgetVer3 extends State<CustomExpandingWidgetVer3> {
                 body: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: Colors.lightBlue[50],
+                    // color: Colors.lightBlue[50],
+                    color: Colors.grey.shade200,
                   ),
                   child: Column(
                     children: <Widget>[
