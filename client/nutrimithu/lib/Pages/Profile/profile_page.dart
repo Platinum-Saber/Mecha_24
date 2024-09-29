@@ -8,7 +8,7 @@ import '../../App/app.dart';
 import 'dart:ui';
 
 class ProfilePageGenerator extends StatefulWidget {
-  const ProfilePageGenerator({Key? key}) : super(key: key);
+  const ProfilePageGenerator({super.key});
 
   @override
   _ProfilePageState createState() => _ProfilePageState();

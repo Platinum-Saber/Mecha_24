@@ -57,10 +57,10 @@ class _HomePageGeneratorState extends State<HomePageGenerator> {
                   ),
                   const SizedBox(height: 16.0),
                   Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(20)),
                       // color: const Color.fromRGBO(200, 230, 201, 0.5),
-                      color: const Color.fromRGBO(255, 255, 255, 0.5),
+                      color: Color.fromRGBO(255, 255, 255, 0.5),
                     ),
                     padding: const EdgeInsets.all(16.0),
                     // color: Colors.green.shade100,
@@ -85,17 +85,18 @@ class _HomePageGeneratorState extends State<HomePageGenerator> {
                     ),
                   ),
                   const SizedBox(height: 16.0),
+                  // my meals container
                   Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
-                        color: const Color.fromRGBO(255, 255, 255, 0.5),
+                        color: Color.fromRGBO(255, 255, 255, 0.5),
                       ),
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           const Text(
-                            'Your Meals',
+                            'My Meals',
                             style: TextStyle(
                                 fontSize: 24,
                                 color: Colors.black54,
@@ -105,17 +106,18 @@ class _HomePageGeneratorState extends State<HomePageGenerator> {
                         ],
                       )),
                   const SizedBox(height: 16.0),
+                  // my stats container
                   Container(
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         borderRadius: BorderRadius.all(Radius.circular(20)),
-                        color: const Color.fromRGBO(255, 255, 255, 0.5),
+                        color: Color.fromRGBO(255, 255, 255, 0.5),
                       ),
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           const Text(
-                            'Your Stats',
+                            'My Stats',
                             style: TextStyle(
                                 fontSize: 24,
                                 color: Colors.black54,
@@ -341,7 +343,8 @@ class ChooseMealButton extends StatelessWidget {
     return ElevatedButton(
       onPressed: () {
         appState.mealToPack = buttonText;
-        appState.mealIndex = 0;
+        appState.mealIndex = mealIndex;
+        appState.foodItemIndex = 0;
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const PackMyMealPage()),
@@ -373,7 +376,7 @@ class PackMyMealPageGenerator extends StatefulWidget {
 
 class PackMyMealPageState extends State<PackMyMealPageGenerator> {
   bool _isEditing = false;
-  bool _isNutriScale = false;
+  final bool _isNutriScale = false;
 
   @override
   Widget build(BuildContext context) {
@@ -393,15 +396,11 @@ class PackMyMealPageState extends State<PackMyMealPageGenerator> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _editCalories(appState),
-                const SizedBox(height: 16.0),
-                _showFoodBox(appState),
-                const SizedBox(height: 16.0),
+                _showDividers(appState),
                 _showScale(appState),
                 // _isNutriScale ? _showScale(appState) : _showDividers(appState),
                 const SizedBox(height: 16.0),
                 _confirmationButton(appState),
-                // Text(appState.breakfast
-                //     .toString()), //to check if it gets updated.
               ],
             ),
           ),
@@ -443,30 +442,25 @@ class PackMyMealPageState extends State<PackMyMealPageGenerator> {
           // disabledElevation: 0,
           child: Icon(_isEditing ? Icons.done : Icons.edit),
         ),
-        // BackButton(),
-        // TextButton(
-        //     onPressed: () {
-        //       setState(() {
-        //         _isNutriScale = !_isNutriScale;
-        //       });
-        //     },
-        //     child: Text(_isNutriScale ? ' Use Box  ' : 'Use Scale')),
       ],
     );
   }
 
   Widget _showFoodBox(apps) {
     //remove hardcode these to get actual data
+    final food = apps.mealItems[apps.mealIndex];
     Map<String, double> dataMap = {
-      "Carb": 4,
-      "Protien": 4,
-      "Vegetables": 8,
+      food[0]: 1,
+      food[1]: 1,
+      food[2]: 1,
+      food[3]: 1,
     };
 
     final colorList = <Color>[
       Colors.yellow,
       Colors.pinkAccent,
       Colors.green,
+      Colors.lightGreen,
     ];
 
     return PieChart(
@@ -479,21 +473,22 @@ class PackMyMealPageState extends State<PackMyMealPageGenerator> {
       chartType: ChartType.disc,
       ringStrokeWidth: 32,
       // centerText: "HYBRID",
+
       legendOptions: const LegendOptions(
-        showLegendsInRow: true,
-        legendPosition: LegendPosition.bottom,
+        showLegendsInRow: false,
+        legendPosition: LegendPosition.right,
         showLegends: true,
         legendShape: BoxShape.circle,
         // legendTextStyle: TextStyle(
         //   fontWeight: FontWeight.bold,
         // ),
       ),
-      // chartValuesOptions: const ChartValuesOptions(
-      //   showChartValueBackground: false,
-      //   showChartValues: true,
-      //   showChartValuesInPercentage: false,
-      //   showChartValuesOutside: false,
-      // ),
+      chartValuesOptions: const ChartValuesOptions(
+        showChartValueBackground: false,
+        showChartValues: false,
+        showChartValuesInPercentage: false,
+        showChartValuesOutside: false,
+      ),
     );
   }
 
@@ -502,26 +497,22 @@ class PackMyMealPageState extends State<PackMyMealPageGenerator> {
       child: Container(
         width: 400,
         padding: const EdgeInsets.all(16.0),
-        child: const Column(
-          // mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Use the following dividers!',
-              style: TextStyle(
-                color: Colors.grey,
-                fontSize: 18,
+        child: (apps.mealIndex == 1 || apps.mealIndex == 3)
+            ? Text('Nutri Box not needed.')
+            : Column(
+                // mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Use the following dividers!',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 18,
+                    ),
+                  ),
+                  _showFoodBox(apps),
+                ],
               ),
-            ),
-            SizedBox(
-              height: 200,
-              width: 400,
-              child: Placeholder(
-                color: Colors.grey,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -535,7 +526,7 @@ class PackMyMealPageState extends State<PackMyMealPageGenerator> {
         },
         style: TextButton.styleFrom(
           backgroundColor: Colors.green.shade100,
-          foregroundColor: Colors.green,
+          foregroundColor: Colors.green.shade600,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16.0),
           ),
@@ -547,8 +538,10 @@ class PackMyMealPageState extends State<PackMyMealPageGenerator> {
 
   Widget _showScale(MyAppState apps) {
     return BreakfastItemsWidget(
-      // items: apps.breakfast.toList(), //get the list of values
-      items: ['rice', 'dhal', 'carrot', 'spinnach'],
+      // meal: apps.mealIndex,
+      items: apps
+          .mealItems[apps.mealIndex], //this should be the actual value needed.
+      // items: ['rice', 'dhal', 'carrot', 'spinnach'],
       currentIndex: apps.foodItemIndex,
       onPrevious: () {
         setState(() {
@@ -570,12 +563,15 @@ class BreakfastItemsWidget extends StatefulWidget {
   final int currentIndex;
   final VoidCallback onPrevious;
   final VoidCallback onNext;
+  // final VoidCallback meal;
 
-  BreakfastItemsWidget({
+  const BreakfastItemsWidget({
+    super.key,
     required this.items,
     required this.currentIndex,
     required this.onPrevious,
     required this.onNext,
+    // required this.meal,
   });
 
   @override
@@ -592,7 +588,7 @@ class _BreakfastItemsWidgetState extends State<BreakfastItemsWidget> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Start serving your meal!',
               style: TextStyle(
                 color: Colors.grey,
@@ -608,13 +604,13 @@ class _BreakfastItemsWidgetState extends State<BreakfastItemsWidget> {
                   IconButton(
                     onPressed:
                         widget.currentIndex > 0 ? widget.onPrevious : null,
-                    icon: Icon(Icons.arrow_back),
+                    icon: const Icon(Icons.arrow_back),
                   ),
                   Expanded(
                     child: Center(
                       child: Text(
                         widget.items[widget.currentIndex],
-                        style: TextStyle(fontSize: 24.0),
+                        style: const TextStyle(fontSize: 24.0),
                       ),
                     ),
                   ),
@@ -622,7 +618,7 @@ class _BreakfastItemsWidgetState extends State<BreakfastItemsWidget> {
                     onPressed: widget.currentIndex < widget.items.length - 1
                         ? widget.onNext
                         : null,
-                    icon: Icon(Icons.arrow_forward),
+                    icon: const Icon(Icons.arrow_forward),
                   ),
                 ],
               ),

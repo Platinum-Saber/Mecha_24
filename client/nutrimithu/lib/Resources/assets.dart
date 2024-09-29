@@ -149,14 +149,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
       leading: const BackButton(),
-      // leading: IconButton(
-      //   icon: const Icon(Icons.arrow_back),
-      //   onPressed: () {
-      //     if (Navigator.canPop(context)) {
-      //       Navigator.pop(context);
-      //     }
-      //   },
-      // ),
+      backgroundColor: Colors.grey.shade200,
+      foregroundColor: Colors.green.shade800,
     );
   }
 
@@ -668,12 +662,10 @@ class _CustomExpandingWidget extends State<CustomExpandingWidget> {
                             TextField(
                               // obscureText: true,
                               decoration: InputDecoration(
-                                border: OutlineInputBorder(),
+                                border: const OutlineInputBorder(),
                                 labelText: (widget.amount.value == 0)
                                     ? 'Enter amount'
-                                    : widget.amount.value.toString() +
-                                        ' ' +
-                                        widget.units,
+                                    : '${widget.amount.value} ${widget.units}',
                                 suffix: Text(widget.units),
                               ),
                               onChanged: (value) {
@@ -684,7 +676,7 @@ class _CustomExpandingWidget extends State<CustomExpandingWidget> {
                                 });
                               },
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             Row(
                               children: [
                                 Expanded(
@@ -707,7 +699,7 @@ class _CustomExpandingWidget extends State<CustomExpandingWidget> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             Row(
                               children: [
                                 Expanded(
@@ -734,9 +726,9 @@ class _CustomExpandingWidget extends State<CustomExpandingWidget> {
                         ),
                       )
                     : Column(children: [
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Row(children: [
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Expanded(
                               child: CustomDropDownBox(
                             placeholder: 'Choose Snack',
@@ -745,9 +737,9 @@ class _CustomExpandingWidget extends State<CustomExpandingWidget> {
                             onChanged: widget.onChanged,
                             mealItems: widget.mealItems,
                           )),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                         ]),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                       ]),
               ),
               // body: Container(
