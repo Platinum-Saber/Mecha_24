@@ -6,6 +6,7 @@ import '../../App/app.dart';
 import 'package:pie_chart/pie_chart.dart';
 import '../../Resources/image_preloader.dart';
 import '../../App/my_home_page.dart';
+import 'dart:ui';
 
 class HomePageGenerator extends StatefulWidget {
   const HomePageGenerator({super.key});
@@ -29,49 +30,106 @@ class _HomePageGeneratorState extends State<HomePageGenerator> {
   Widget build(BuildContext context) {
     var appState = context.watch<MyAppState>();
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Align(
-          alignment: Alignment.topLeft,
+      body: Stack(fit: StackFit.expand, children: <Widget>[
+        Image.asset(
+          'assets/bg.png',
+          fit: BoxFit.cover,
+          // height: 120,
+        ),
+        BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
           child: Container(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'hello, ${appState.name}!',
-                  style: const TextStyle(fontSize: 24, color: Colors.grey),
-                ),
-                const SizedBox(height: 16.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildDonutProgress(
-                      appState.total,
-                      appState.recCal,
-                      Colors.blue,
-                      Colors.grey.shade100,
+            color: Colors.white.withOpacity(0.5),
+          ),
+        ),
+        SingleChildScrollView(
+          child: Align(
+            alignment: Alignment.topLeft,
+            child: Container(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'hello, ${appState.name}!',
+                    style: const TextStyle(fontSize: 24, color: Colors.black54),
+                  ),
+                  const SizedBox(height: 16.0),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(20)),
+                      // color: const Color.fromRGBO(200, 230, 201, 0.5),
+                      color: const Color.fromRGBO(255, 255, 255, 0.5),
                     ),
-                    const SizedBox(width: 16.0),
-                    Text(
-                      'achieved of ${appState.recCal} kCal Goal',
-                      style: const TextStyle(fontSize: 18, color: Colors.grey),
+                    padding: const EdgeInsets.all(16.0),
+                    // color: Colors.green.shade100,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildDonutProgress(
+                          appState.total,
+                          appState.recCal,
+                          Colors.blue,
+                          Colors.grey.shade100,
+                        ),
+                        const SizedBox(width: 16.0),
+                        Text(
+                          'achieved of ${appState.recCal} kCal Goal',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                const SizedBox(height: 8.0),
-                _chooseMeal(context),
-                const SizedBox(height: 24.0),
-                const Text(
-                  'Stats',
-                  style: TextStyle(fontSize: 24, color: Colors.grey),
-                ),
-                _showStats(appState),
-              ],
+                  ),
+                  const SizedBox(height: 16.0),
+                  Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        color: const Color.fromRGBO(255, 255, 255, 0.5),
+                      ),
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Your Meals',
+                            style: TextStyle(
+                                fontSize: 24,
+                                color: Colors.black54,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          _chooseMeal(context),
+                        ],
+                      )),
+                  const SizedBox(height: 16.0),
+                  Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(20)),
+                        color: const Color.fromRGBO(255, 255, 255, 0.5),
+                      ),
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Your Stats',
+                            style: TextStyle(
+                                fontSize: 24,
+                                color: Colors.black54,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          _showStats(appState),
+                        ],
+                      )),
+                ],
+              ),
             ),
           ),
         ),
-      ),
+      ]),
     );
   }
 
@@ -101,34 +159,34 @@ class _HomePageGeneratorState extends State<HomePageGenerator> {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        SizedBox(height: 20.0),
+        SizedBox(height: 8.0),
         ChooseMealButton(
           buttonText: 'Breakfast',
-          colorScheme: 'blue',
+          colorScheme: 'green',
           mealIndex: 0,
         ),
-        SizedBox(height: 20.0),
+        SizedBox(height: 8.0),
         ChooseMealButton(
           buttonText: 'Morning Snack',
           colorScheme: 'green',
           mealIndex: 1,
         ),
-        SizedBox(height: 20.0),
+        SizedBox(height: 8.0),
         ChooseMealButton(
           buttonText: 'Lunch',
-          colorScheme: 'blue',
+          colorScheme: 'green',
           mealIndex: 2,
         ),
-        SizedBox(height: 20.0),
+        SizedBox(height: 8.0),
         ChooseMealButton(
           buttonText: 'Evening Snack',
           colorScheme: 'green',
           mealIndex: 3,
         ),
-        SizedBox(height: 20.0),
+        SizedBox(height: 8.0),
         ChooseMealButton(
           buttonText: 'Dinner',
-          colorScheme: 'blue',
+          colorScheme: 'green',
           mealIndex: 4,
         ),
       ],
@@ -138,72 +196,63 @@ class _HomePageGeneratorState extends State<HomePageGenerator> {
   Widget _showStats(MyAppState appState) {
     return Column(
       children: [
-        Card.outlined(
-          child: Container(
-            width: 400,
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text(
-                  'Progress during past 30 days',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 18,
-                  ),
-                ),
-                _plotWeightLoss(),
-              ],
-            ),
+        // Card.outlined(
+        //   child: Container(
+        //     width: 400,
+        //     padding: const EdgeInsets.all(16.0),
+        //     child: Column(
+        //       crossAxisAlignment: CrossAxisAlignment.start,
+        //       children: [
+        //         const Text(
+        //           'Progress during past 30 days',
+        //           style: TextStyle(
+        //             color: Colors.grey,
+        //             fontSize: 18,
+        //           ),
+        //         ),
+        //         _plotWeightLoss(),
+        //       ],
+        //     ),
+        //   ),
+        // ),
+        Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
           ),
-        ),
-        Card.outlined(
           child: ExpansionTile(
+            // collapsedBackgroundColor: Colors.green[50],
             title: Text(
-              'BMI ${appState.bmi}',
+              'BMI = ${appState.bmi.toStringAsFixed(2)}',
               style: const TextStyle(
-                color: Colors.blue,
-                fontSize: 24,
+                color: Colors.black54,
+                fontSize: 18,
               ),
             ),
+            // backgroundColor: Colors.lightGreen.shade100,
             children: [
               Container(
                 width: 400,
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  'BMI represents how much you weigh for your given height.\n\nSince your Asian by descent your BMI shows that you are ${appState.bmiCategory}.\n\nYou have to lose a minimum of ${appState.weightLossGoal} kg to achieve a normal BMI. \n\nminimum is calculated by 22.9 x height^2 according to current guidlines.',
-                ),
-              ),
-            ],
-          ),
-        ),
-        Card.outlined(
-          child: ExpansionTile(
-            title: Text(
-              'EER ${appState.eer} kCal/day',
-              style: const TextStyle(
-                color: Colors.blue,
-                fontSize: 24,
-              ),
-            ),
-            children: [
-              Container(
-                width: 400,
-                padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  'EER is your Estimated Energy Requirements per day.\n\nProtein requirements should be around ${appState.proteinPerDay} grams per day',
+                  'BMI represents how much you weigh for your given height.\n\nSince your Asian by descent your BMI shows that you are ${appState.bmiCategory}.\n\nYou have to lose a minimum of ${appState.weightLossGoal.toStringAsFixed(2)} kg to achieve a normal BMI. \n\nminimum is calculated by 22.9 x height^2 according to current guidlines.',
                 ),
               ),
             ],
           ),
         ),
-        Card.outlined(
+        Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
           child: ExpansionTile(
+            // collapsedBackgroundColor: Colors.green[50],
             title: Text(
-              'Goal ${appState.weightLossGoal} kg',
+              'Estimated Energy Requirement = ${appState.eer.round()} Cal/day',
               style: const TextStyle(
-                color: Colors.blue,
-                fontSize: 24,
+                color: Colors.black54,
+                fontSize: 18,
               ),
             ),
             children: [
@@ -211,7 +260,33 @@ class _HomePageGeneratorState extends State<HomePageGenerator> {
                 width: 400,
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
-                  'Your goal is to lose ${appState.weightLossGoal} kg.\n\nThis is a healthy goal and can be achieved by losing ${appState.weightLossRate} kg per week.\n\nThis will help you maintain a healthy lifestyle and keep you fit.',
+                  'EER is your Estimated Energy Requirements per day.\n\nProtein requirements should be around ${appState.proteinPerDay.round()} grams per day',
+                ),
+              ),
+            ],
+          ),
+        ),
+        Card(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+          ),
+          // borderOnForeground: false,
+          child: ExpansionTile(
+            // collapsedBackgroundColor: Colors.green[50],
+            title: Text(
+              'Weight Goal = ${appState.weightLossGoal.toStringAsFixed(2)} kg',
+              style: const TextStyle(
+                color: Colors.black54,
+                fontSize: 18,
+              ),
+            ),
+            children: [
+              Container(
+                width: 400,
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  'Your goal is to lose ${appState.weightLossGoal.toStringAsFixed(2)} kg.\n\nThis is a healthy goal and can be achieved by losing ${appState.weightLossRate} kg per week.\n\nThis will help you maintain a healthy lifestyle and keep you fit.',
                 ),
               ),
             ],
@@ -253,8 +328,10 @@ class ChooseMealButton extends StatelessWidget {
       bgcolor = const Color.fromRGBO(235, 242, 255, 1);
       fgcolor = const Color.fromRGBO(53, 122, 246, 1);
     } else if (colorScheme == 'green') {
-      bgcolor = const Color.fromRGBO(231, 248, 247, 1);
-      fgcolor = const Color.fromRGBO(13, 177, 173, 1);
+      // bgcolor = const Color.fromRGBO(231, 248, 247, 1);
+      // fgcolor = const Color.fromRGBO(13, 177, 173, 1);
+      bgcolor = Colors.grey.shade200;
+      fgcolor = Colors.green;
     } else {
       // Handle other color schemes or set default values
       bgcolor = Colors.white;

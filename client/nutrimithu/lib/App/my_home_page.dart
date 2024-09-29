@@ -58,9 +58,16 @@ class _MyHomePageState extends State<MyHomePage> {
         elevation: 1.0,
         shadowColor: Colors.grey.shade400, // Set the shadow color
         surfaceTintColor: Colors.white,
-        // centerTitle: true,
-        title: Text(_titles[_currentIndex],
-            style: const TextStyle(color: Colors.grey)),
+
+        title: Image.asset(
+          'assets/logo.png',
+          fit: BoxFit.contain,
+          height: 120,
+        ),
+
+        centerTitle: true,
+        // title: Text(_titles[_currentIndex],
+        //     style: const TextStyle(color: Colors.grey)),
       ),
       body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -74,8 +81,10 @@ class _MyHomePageState extends State<MyHomePage> {
             });
           }
         },
-        selectedItemColor: const Color.fromARGB(
-            255, 125, 167, 255), // Set the color for selected items
+        selectedItemColor: Colors.green.shade800,
+
+        // selectedItemColor: const Color.fromARGB(
+        // 255, 125, 167, 255), // Set the color for selected items
         unselectedItemColor: Colors.grey,
         type:
             BottomNavigationBarType.fixed, // Set the color for unselected items
