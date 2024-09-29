@@ -60,7 +60,7 @@ class UnitButtons extends StatelessWidget {
         backgroundColor: WidgetStateProperty.resolveWith<Color>(
           (Set<WidgetState> states) {
             if (pressed) {
-              return Colors.lightBlue.shade400;
+              return Colors.green.shade200;
             } else {
               return const Color(0xffF0F0F2); // The default color
             }
@@ -307,7 +307,7 @@ class CustomTextInputBox extends StatelessWidget {
           child: TextFormField(
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
-              fillColor: Colors.lightBlue[50], // light blue color
+              fillColor: Colors.grey[200], // light blue color
               filled: true,
               labelText: placeholder,
             ),
@@ -361,15 +361,6 @@ class _CustomDropDownBoxState extends State<CustomDropDownBox> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        // const SizedBox(width: 20),
-        // Padding(
-        //   padding: const EdgeInsets.all(8.0),
-        //   child: Text(
-        //     widget.prefixText,
-        //     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        //   ),
-        // ),
-        // const SizedBox(width: 10),
         Expanded(
           child: SingleChildScrollView(
             child: Autocomplete<String>(
@@ -394,7 +385,7 @@ class _CustomDropDownBoxState extends State<CustomDropDownBox> {
                   focusNode: focusNode,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
-                    fillColor: Colors.lightBlue[50], // light blue color
+                    fillColor: Colors.grey[200], // light blue color
                     filled: true,
                     labelText: widget.placeholder,
                   ),
@@ -497,7 +488,7 @@ class _CustomDropDownBoxVer2 extends State<CustomDropDownBoxVer2> {
                   focusNode: focusNode,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
-                    fillColor: Colors.lightBlue[50], // light blue color
+                    fillColor: Colors.grey[200], // light blue color
                     filled: true,
                     labelText: widget.placeholder,
                   ),
@@ -637,8 +628,8 @@ class _CustomExpandingWidget extends State<CustomExpandingWidget> {
             ExpansionPanel(
               headerBuilder: (BuildContext context, bool isExpanded) {
                 return Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.blue,
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade200,
                   ),
                   child: ListTile(
                     title: Text(widget.listTitle),
@@ -828,8 +819,8 @@ class _CustomExpandingWidgetVer2 extends State<CustomExpandingWidgetVer2> {
             ExpansionPanel(
               headerBuilder: (BuildContext context, bool isExpanded) {
                 return Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.blue,
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade200,
                   ),
                   child: ListTile(
                     title: Text(widget.listTitle),
