@@ -457,7 +457,9 @@ class _CustomMealPlanPageState extends State<CustomMealPlanPageGenerator> {
                 onPressed: () {
                   print('Generate custom meal plan');
                 },
-                child: const Text('Done', style: TextStyle(fontSize: 16)),
+                child: Text('Done',
+                    style:
+                        TextStyle(fontSize: 16, color: Colors.green.shade800)),
               ),
             ),
           ],
@@ -611,7 +613,8 @@ class _PrescriptionMealPlanPageGenerator
               onPressed: () {
                 print('Generate custom meal plan');
               },
-              child: const Text('Done', style: TextStyle(fontSize: 16)),
+              child: Text('Done',
+                  style: TextStyle(fontSize: 16, color: Colors.green.shade800)),
             ),
           ),
         ]),

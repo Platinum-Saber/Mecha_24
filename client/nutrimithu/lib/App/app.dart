@@ -42,6 +42,13 @@ class MyAppState extends ChangeNotifier {
   var total = "0000";
 
   var mealCals = <double>[0, 0, 0, 0, 0];
+  var mealsCompleted = <bool>[
+    false,
+    false,
+    false,
+    false,
+    false
+  ]; //meal completion within a day.
 
   String mealToPack = '';
   int _mealIndex = 0;
