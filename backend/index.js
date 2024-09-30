@@ -303,7 +303,7 @@ async function handleGetCalorieDiary(req, res) {
     }
 
     const calorieDiaryBreakfastRecord = await sequelize.query(
-      `SELECT m.carb_name, m.prot_name, m.vegi_name, c.total_calories, m.calc_carb_calorie, m.calc_prot_calorie, m.calc_vegi_calorie
+      `SELECT CONCAT(m.carb_name, ', ', m.prot_name, ', ', m.vegi_name) AS name, c.total_calories
       FROM calorie_diary c
       JOIN meals m ON c.meal_id = m.meal_id
       WHERE c.user_id = :userId AND c.meal_type = 'breakfast' AND c.date = :date`,
@@ -315,7 +315,7 @@ async function handleGetCalorieDiary(req, res) {
     console.log('Fetched breakfast:', calorieDiaryBreakfastRecord);
 
     const calorieDiaryLunchRecord = await sequelize.query(
-      `SELECT m.carb_name, m.prot_name, m.vegi_name, c.total_calories, m.calc_carb_calorie, m.calc_prot_calorie, m.calc_vegi_calorie
+      `SELECT CONCAT(m.carb_name, ', ', m.prot_name, ', ', m.vegi_name) AS name, c.total_calories
       FROM calorie_diary c
       JOIN meals m ON c.meal_id = m.meal_id
       WHERE c.user_id = :userId AND c.meal_type = 'lunch' AND c.date = :date`,
@@ -327,7 +327,7 @@ async function handleGetCalorieDiary(req, res) {
     console.log('Fetched lunch:', calorieDiaryLunchRecord);
 
     const calorieDiaryDinnerRecord = await sequelize.query(
-      `SELECT m.carb_name, m.prot_name, m.vegi_name, c.total_calories, m.calc_carb_calorie, m.calc_prot_calorie, m.calc_vegi_calorie
+      `SELECT CONCAT(m.carb_name, ', ', m.prot_name, ', ', m.vegi_name) AS name, c.total_calories
       FROM calorie_diary c
       JOIN meals m ON c.meal_id = m.meal_id
       WHERE c.user_id = :userId AND c.meal_type = 'dinner' AND c.date = :date`,
@@ -381,21 +381,45 @@ async function handleAddCalorieDiary(req, res) {
   const { userId, date, mealTime, mealId, snackId, totalCalories } = req.body;
 
   try {
-    const calorieDiary = await CalorieDiary.create({
-      user_id: userId,
-      date,
-      meal_time: mealTime,
-      meal_id: mealId,
-      snack_id: snackId,
-      total_calories: totalCalories
+    // Check if an entry with the same userId, date, and mealTime exists
+    console.log('Checking if an entry with the same userId, date, and mealTime exists');
+    let calorieDiary = await CalorieDiary.findOne({
+      where: {
+        user_id: userId,
+        date: date,
+        meal_time: mealTime
+      }
     });
 
-    logger.info('Calorie diary added successfully:', calorieDiary.calorie_diary_id);
-    res.status(201).json({ message: 'Calorie diary added successfully' });
+    if (calorieDiary) {
+      // Update the existing entry
+      console.log('Updating the existing entry');
+      calorieDiary.meal_id = mealId;
+      calorieDiary.snack_id = snackId;
+      calorieDiary.total_calories = totalCalories;
+      await calorieDiary.save();
+
+      logger.info('Calorie diary updated successfully:', calorieDiary.calorie_diary_id);
+      res.status(200).json({ message: 'Calorie diary updated successfully' });
+    } else {
+      console.log('Creating a new entry');
+      // Create a new entry
+      calorieDiary = await CalorieDiary.create({
+        user_id: userId,
+        date,
+        meal_time: mealTime,
+        meal_id: mealId,
+        snack_id: snackId,
+        total_calories: totalCalories
+      });
+
+      logger.info('Calorie diary added successfully:', calorieDiary.calorie_diary_id);
+      res.status(201).json({ message: 'Calorie diary added successfully' });
+    }
 
   } catch (error) {
-    logger.error('Error adding calorie diary:', error);
-    res.status(500).json({ error: 'Error adding calorie diary', details: error.message });
+    logger.error('Error adding or updating calorie diary:', error);
+    res.status(500).json({ error: 'Error adding or updating calorie diary', details: error.message });
   }
 }
 
@@ -409,20 +433,41 @@ async function handleSaveMealPlan(req, res) {
 
     // Filter out entries with null meal_id
     const validMealEntries = Object.entries(mealPlan).filter(([mealType, mealId]) => mealId !== 'null');
-
+    
     // Insert each valid meal into the calorie_diary table
     const promises = validMealEntries.map(async ([mealType, mealId], index) => {
       try {
-        await CalorieDiary.create({
-          user_id: userId,
-          date: currentDate,
-          meal_type: mealType.toLowerCase().replace(' ', '_'), // Convert meal type to match ENUM values
-          meal_id: mealId,
-          total_calories: mealCals[index], // Use the corresponding mealCals value
-          state: 'pending'
+        // Check if an entry with the same userId, date, and mealType exists
+        console.log(`Checking if an entry with the same userId, date, and mealType (${mealType}) exists`);
+        let calorieDiary = await CalorieDiary.findOne({
+          where: {
+            user_id: userId,
+            date: currentDate,
+            meal_type: mealType.toLowerCase().replace(' ', '_') // Convert meal type to match ENUM values
+          }
         });
+
+        if (calorieDiary) {
+          // Update the existing entry
+          console.log(`Updating the existing entry for ${mealType}`);
+          calorieDiary.meal_id = mealId;
+          calorieDiary.total_calories = mealCals[index]; // Use the corresponding mealCals value
+          calorieDiary.state = 'pending';
+          await calorieDiary.save();
+        } else {
+          // Create a new entry
+          console.log(`Creating a new entry for ${mealType}`);
+          await CalorieDiary.create({
+            user_id: userId,
+            date: currentDate,
+            meal_type: mealType.toLowerCase().replace(' ', '_'), // Convert meal type to match ENUM values
+            meal_id: mealId,
+            total_calories: mealCals[index], // Use the corresponding mealCals value
+            state: 'pending'
+          });
+        }
       } catch (error) {
-        logger.error(`Error inserting meal plan entry for ${mealType}:`, error);
+        logger.error(`Error inserting or updating meal plan entry for ${mealType}:`, error);
         throw error;
       }
     });
