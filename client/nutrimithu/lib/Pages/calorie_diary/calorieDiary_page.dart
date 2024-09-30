@@ -1,10 +1,11 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../App/app.dart';
 import '../../Resources/assets.dart';
-import 'dart:ui';
 
 class CalorieDiaryPageGenerator extends StatefulWidget {
   const CalorieDiaryPageGenerator({super.key});
@@ -100,13 +101,22 @@ class _CalorieDiaryPageState extends State<CalorieDiaryPageGenerator> {
   Set<Map<String, double>> _getItemList(String mealType) {
     if (mealPlan.isEmpty || !mealPlan.containsKey(mealType)) {
       return {};
+    } else if (mealPlan[mealType].isEmpty) {
+      return {
+        {"Meal Plan not selected for $mealType": 0.0}
+      };
+    } else {
+      var itemList = mealPlan[mealType].map<Map<String, double>>((item) {
+        var itemName = item['name'] as String? ?? 'Unknown';
+        var itemCaloriesStr = item['total_calories'].toString();
+        var itemCalories = double.tryParse(itemCaloriesStr) ?? 0.0;
+        print('Item: $itemName, Calories: $itemCalories'); // Debug print
+
+        return {itemName: itemCalories};
+      }).toSet();
+
+      print('Item list for $mealType: $itemList');
+      return itemList;
     }
-
-    var itemList = mealPlan[mealType].map<Map<String, double>>((item) {
-      return {item['name']: item['calories'].toDouble()};
-    }).toSet();
-
-    print('Item list for $mealType: $itemList');
-    return itemList;
   }
 }
