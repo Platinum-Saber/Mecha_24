@@ -56,8 +56,14 @@ class MyAppState extends ChangeNotifier {
 
   Map<String, dynamic> selectedMealPlan = {};
   //these are the variables to store today's meal plan
-  var todayBreakfast = [];
-  var todaySnack1 = [];
+  // fetched data shud be saved in this format
+  var mealItems = [
+    ['string hoppers: 10', 'egg: 1', 'potato: L1', 'sambol: L1'],
+    ['banana: 1'],
+    ['rice: L2', 'fish: 1', 'carrot: L1', 'beans: L1'],
+    ['tea'],
+    ['noodles: L2', 'egg: 1', 'beans: L1', 'carrot: L1']
+  ];
 
   var breakfast = <String>{}.toSet();
   var snack1 = <String>{}.toSet();

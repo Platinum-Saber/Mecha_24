@@ -60,7 +60,7 @@ class UnitButtons extends StatelessWidget {
         backgroundColor: WidgetStateProperty.resolveWith<Color>(
           (Set<WidgetState> states) {
             if (pressed) {
-              return Colors.lightBlue.shade400;
+              return Colors.green.shade200;
             } else {
               return const Color(0xffF0F0F2); // The default color
             }
@@ -149,14 +149,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         style: const TextStyle(fontWeight: FontWeight.bold),
       ),
       leading: const BackButton(),
-      // leading: IconButton(
-      //   icon: const Icon(Icons.arrow_back),
-      //   onPressed: () {
-      //     if (Navigator.canPop(context)) {
-      //       Navigator.pop(context);
-      //     }
-      //   },
-      // ),
+      backgroundColor: Colors.grey.shade200,
+      foregroundColor: Colors.green.shade800,
     );
   }
 
@@ -313,7 +307,7 @@ class CustomTextInputBox extends StatelessWidget {
           child: TextFormField(
             keyboardType: TextInputType.number,
             decoration: InputDecoration(
-              fillColor: Colors.lightBlue[50], // light blue color
+              fillColor: Colors.grey[200], // light blue color
               filled: true,
               labelText: placeholder,
             ),
@@ -367,15 +361,6 @@ class _CustomDropDownBoxState extends State<CustomDropDownBox> {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        // const SizedBox(width: 20),
-        // Padding(
-        //   padding: const EdgeInsets.all(8.0),
-        //   child: Text(
-        //     widget.prefixText,
-        //     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        //   ),
-        // ),
-        // const SizedBox(width: 10),
         Expanded(
           child: SingleChildScrollView(
             child: Autocomplete<String>(
@@ -400,7 +385,7 @@ class _CustomDropDownBoxState extends State<CustomDropDownBox> {
                   focusNode: focusNode,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
-                    fillColor: Colors.lightBlue[50], // light blue color
+                    fillColor: Colors.grey[200], // light blue color
                     filled: true,
                     labelText: widget.placeholder,
                   ),
@@ -503,7 +488,7 @@ class _CustomDropDownBoxVer2 extends State<CustomDropDownBoxVer2> {
                   focusNode: focusNode,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
-                    fillColor: Colors.lightBlue[50], // light blue color
+                    fillColor: Colors.grey[200], // light blue color
                     filled: true,
                     labelText: widget.placeholder,
                   ),
@@ -573,11 +558,11 @@ class _CustomCalendarState extends State<CustomCalendar> {
       },
       calendarStyle: CalendarStyle(
         selectedDecoration: BoxDecoration(
-          color: Colors.blue[600],
+          color: Colors.green[600],
           shape: BoxShape.circle,
         ),
         todayDecoration: BoxDecoration(
-          color: Colors.blue[200],
+          color: Colors.green[200],
           shape: BoxShape.circle,
         ),
         defaultDecoration: const BoxDecoration(
@@ -643,8 +628,8 @@ class _CustomExpandingWidget extends State<CustomExpandingWidget> {
             ExpansionPanel(
               headerBuilder: (BuildContext context, bool isExpanded) {
                 return Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.blue,
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade200,
                   ),
                   child: ListTile(
                     title: Text(widget.listTitle),
@@ -668,12 +653,10 @@ class _CustomExpandingWidget extends State<CustomExpandingWidget> {
                             TextField(
                               // obscureText: true,
                               decoration: InputDecoration(
-                                border: OutlineInputBorder(),
+                                border: const OutlineInputBorder(),
                                 labelText: (widget.amount.value == 0)
                                     ? 'Enter amount'
-                                    : widget.amount.value.toString() +
-                                        ' ' +
-                                        widget.units,
+                                    : '${widget.amount.value} ${widget.units}',
                                 suffix: Text(widget.units),
                               ),
                               onChanged: (value) {
@@ -684,7 +667,7 @@ class _CustomExpandingWidget extends State<CustomExpandingWidget> {
                                 });
                               },
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             Row(
                               children: [
                                 Expanded(
@@ -707,7 +690,7 @@ class _CustomExpandingWidget extends State<CustomExpandingWidget> {
                                 ),
                               ],
                             ),
-                            SizedBox(height: 10),
+                            const SizedBox(height: 10),
                             Row(
                               children: [
                                 Expanded(
@@ -734,9 +717,9 @@ class _CustomExpandingWidget extends State<CustomExpandingWidget> {
                         ),
                       )
                     : Column(children: [
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         Row(children: [
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Expanded(
                               child: CustomDropDownBox(
                             placeholder: 'Choose Snack',
@@ -745,9 +728,9 @@ class _CustomExpandingWidget extends State<CustomExpandingWidget> {
                             onChanged: widget.onChanged,
                             mealItems: widget.mealItems,
                           )),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                         ]),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                       ]),
               ),
               // body: Container(
@@ -836,8 +819,8 @@ class _CustomExpandingWidgetVer2 extends State<CustomExpandingWidgetVer2> {
             ExpansionPanel(
               headerBuilder: (BuildContext context, bool isExpanded) {
                 return Container(
-                  decoration: const BoxDecoration(
-                    color: Colors.blue,
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade200,
                   ),
                   child: ListTile(
                     title: Text(widget.listTitle),
@@ -935,12 +918,13 @@ class _CustomExpandingWidgetVer3 extends State<CustomExpandingWidgetVer3> {
             },
             children: [
               ExpansionPanel(
-                backgroundColor: Colors.lightBlue[50],
+                // backgroundColor: Colors.lightBlue[50],
+                backgroundColor: Colors.grey.shade200,
                 headerBuilder: (BuildContext context, bool isExpanded) {
                   return Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: Colors.blue,
+                      color: Colors.green.shade200,
                     ),
                     child: ListTile(
                       title: Text(widget.listTitle),
@@ -950,7 +934,8 @@ class _CustomExpandingWidgetVer3 extends State<CustomExpandingWidgetVer3> {
                 body: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20),
-                    color: Colors.lightBlue[50],
+                    // color: Colors.lightBlue[50],
+                    color: Colors.grey.shade200,
                   ),
                   child: Column(
                     children: <Widget>[

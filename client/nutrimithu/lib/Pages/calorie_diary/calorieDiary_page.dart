@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../App/app.dart';
 import '../../Resources/assets.dart';
+import 'dart:ui';
 
 class CalorieDiaryPageGenerator extends StatefulWidget {
   const CalorieDiaryPageGenerator({super.key});

@@ -5,9 +5,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../App/app.dart';
+import 'dart:ui';
 
 class ProfilePageGenerator extends StatefulWidget {
-  const ProfilePageGenerator({Key? key}) : super(key: key);
+  const ProfilePageGenerator({super.key});
 
   @override
   _ProfilePageState createState() => _ProfilePageState();
@@ -78,36 +79,49 @@ class _ProfilePageState extends State<ProfilePageGenerator> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Profile')),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _profilePicture(),
-              _usernameShow(),
-              _name(),
-              _email(),
-              _sex(),
-              _dateOfBirth(),
-              _height(),
-              _weight(),
-              _dietaryPreference(),
-              _allergies(),
-              _ethnicity(),
-              _activityLevel(),
-              _currentCalorieIntake(),
-              _weightGoal(),
-              _targetWeight(),
-              _weightChangeRate(),
-              const SizedBox(height: 20),
-              _deleteUserButton(),
-            ],
+      // appBar: AppBar(title: const Text('My Profile')),
+      body: Stack(fit: StackFit.expand, children: <Widget>[
+        Image.asset(
+          'assets/bg.png',
+          fit: BoxFit.cover,
+          // height: 120,
+        ),
+        BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+          child: Container(
+            color: Colors.white.withOpacity(0.8),
           ),
         ),
-      ),
+        Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _profilePicture(),
+                _usernameShow(),
+                _name(),
+                _email(),
+                _sex(),
+                _dateOfBirth(),
+                _height(),
+                _weight(),
+                _dietaryPreference(),
+                _allergies(),
+                _ethnicity(),
+                _activityLevel(),
+                _currentCalorieIntake(),
+                _weightGoal(),
+                _targetWeight(),
+                _weightChangeRate(),
+                const SizedBox(height: 20),
+                _deleteUserButton(),
+              ],
+            ),
+          ),
+        ),
+      ]),
       floatingActionButton: FloatingActionButton(
         onPressed: _toggleEditMode,
         child: Icon(_isEditing ? Icons.save : Icons.edit),
