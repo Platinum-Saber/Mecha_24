@@ -4,7 +4,6 @@ import '../../Resources/assets.dart';
 import '../../App/app.dart';
 import 'meal_selection_page.dart';
 import '../../App/my_home_page.dart';
-import 'dart:ui';
 
 class PlanDietPageGenerator extends StatelessWidget {
   const PlanDietPageGenerator({super.key});

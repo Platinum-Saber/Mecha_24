@@ -25,13 +25,6 @@ class _MyHomePageState extends State<MyHomePage> {
     const ProfilePage(),
   ];
 
-  final List<String> _titles = [
-    'NutriMithu',
-    'Plan Diet',
-    'Calorie Diary',
-    'Profile',
-  ];
-
   void _handleLogout() async {
     try {
       // Clear user data from SharedPreferences
