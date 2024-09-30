@@ -294,67 +294,85 @@ async function handleGetMeals(req, res) {
   }
 }
 
-async function handleGetCalorieDiary(res,req) {
-  try{
+async function handleGetCalorieDiary(req, res) {
+  try {
     const { userId, date } = req.params;
-    
-    const calorieDieryBreakfastRecord = await sequelize.query(
+
+    if (!userId || !date) {
+      return res.status(400).send('Missing userId or date parameter');
+    }
+
+    const calorieDiaryBreakfastRecord = await sequelize.query(
       `SELECT m.carb_name, m.prot_name, m.vegi_name, c.total_calories, m.calc_carb_calorie, m.calc_prot_calorie, m.calc_vegi_calorie
       FROM calorie_diary c
       JOIN meals m ON c.meal_id = m.meal_id
-      WHERE c.user_id = ${userId} AND  AND c.meal_time = 'breakfast', c.date = ${date}`,
+      WHERE c.user_id = :userId AND c.meal_type = 'breakfast' AND c.date = :date`,
       {
+        replacements: { userId, date },
         type: sequelize.QueryTypes.SELECT
       }
     );
-    console.log('Fetched breakfast:', calorieDieryBreakfastRecord);
+    console.log('Fetched breakfast:', calorieDiaryBreakfastRecord);
 
-    const calorieDieryLunchRecord = await sequelize.query(
+    const calorieDiaryLunchRecord = await sequelize.query(
       `SELECT m.carb_name, m.prot_name, m.vegi_name, c.total_calories, m.calc_carb_calorie, m.calc_prot_calorie, m.calc_vegi_calorie
       FROM calorie_diary c
       JOIN meals m ON c.meal_id = m.meal_id
-      WHERE c.user_id = ${userId} AND c.meal_time = 'lunch', c.date = ${date}`,
+      WHERE c.user_id = :userId AND c.meal_type = 'lunch' AND c.date = :date`,
       {
+        replacements: { userId, date },
         type: sequelize.QueryTypes.SELECT
       }
     );
-    console.log('Fetched lunch:', calorieDieryLunchRecord);
+    console.log('Fetched lunch:', calorieDiaryLunchRecord);
 
-    const calorieDieryDinnerRecord = await sequelize.query(
+    const calorieDiaryDinnerRecord = await sequelize.query(
       `SELECT m.carb_name, m.prot_name, m.vegi_name, c.total_calories, m.calc_carb_calorie, m.calc_prot_calorie, m.calc_vegi_calorie
       FROM calorie_diary c
       JOIN meals m ON c.meal_id = m.meal_id
-      WHERE c.user_id = ${userId} AND c.meal_time = 'dinner', c.date = ${date}`,
+      WHERE c.user_id = :userId AND c.meal_type = 'dinner' AND c.date = :date`,
       {
+        replacements: { userId, date },
         type: sequelize.QueryTypes.SELECT
       }
     );
-    console.log('Fetched dinner:', calorieDieryDinnerRecord);
+    console.log('Fetched dinner:', calorieDiaryDinnerRecord);
 
-    const calorieDierySnack1Record = await sequelize.query(
+    const calorieDiarySnack1Record = await sequelize.query(
       `SELECT s.name, c.total_calories
       FROM calorie_diary c
-      JOIN snacks s ON c.snack_id = s.snack_id
-      WHERE c.user_id = ${userId} AND c.meal_time = 'snack1', c.date = ${date}`,
+      JOIN snacks s ON c.meal_id = s.snack_id
+      WHERE c.user_id = :userId AND c.meal_type = 'snack_1' AND c.date = :date`,
       {
+        replacements: { userId, date },
         type: sequelize.QueryTypes.SELECT
       }
     );
-    console.log('Fetched snack1:', calorieDierySnack1Record);
+    console.log('Fetched snack1:', calorieDiarySnack1Record);
 
-    const calorieDierySnack2Record = await sequelize.query(
+    const calorieDiarySnack2Record = await sequelize.query(
       `SELECT s.name, c.total_calories
       FROM calorie_diary c
-      JOIN snacks s ON c.snack_id = s.snack_id
-      WHERE c.user_id = ${userId} AND c.meal_time = 'snack2' AND c.date = ${date}`,
+      JOIN snacks s ON c.meal_id = s.snack_id
+      WHERE c.user_id = :userId AND c.meal_type = 'snack_2' AND c.date = :date`,
       {
+        replacements: { userId, date },
         type: sequelize.QueryTypes.SELECT
       }
     );
-    console.log('Fetched snack2:', calorieDierySnack2Record);
-  
-  }catch(error){
-    logger.error('Error fetching calorie diary:', error);
+    console.log('Fetched snack2:', calorieDiarySnack2Record);
+
+    const calorieDiary = {
+      breakfast: calorieDiaryBreakfastRecord,
+      lunch: calorieDiaryLunchRecord,
+      dinner: calorieDiaryDinnerRecord,
+      snack1: calorieDiarySnack1Record,
+      snack2: calorieDiarySnack2Record
+    };
+
+    res.json(calorieDiary);
+  } catch (error) {
+    console.error('Error fetching calorie diary:', error);
     res.status(500).json({ error: 'Error fetching calorie diary', details: error.message });
   }
 }

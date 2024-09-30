@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import '../../App/app.dart';
 import '../../Resources/assets.dart';
 
@@ -11,23 +13,26 @@ class CalorieDiaryPageGenerator extends StatefulWidget {
 }
 
 class _CalorieDiaryPageState extends State<CalorieDiaryPageGenerator> {
-  final List<String> foodItems = [
-    'rice',
-    'potato',
-    'bread',
-    'dhal',
-    'eggplant',
-    'bean'
-  ];
-  final List<String> snackItems = ['biscuit', 'cake', 'fruit'];
-  final Set<Map<String, double>> itemList = {
-    {'rice': 100},
-    {'bread': 120},
-  };
+  Map<String, dynamic> mealPlan = {};
 
   @override
   void initState() {
     super.initState();
+  }
+
+  Future<void> fetchCalorieDiary(String userId, String date) async {
+    final response = await http
+        .get(Uri.parse('http://10.0.2.2:3000/calorie-diary/$userId/$date'));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        mealPlan = json.decode(response.body);
+        print('mealPlan is $mealPlan');
+        print("//////////////////////////////////////////////");
+      });
+    } else {
+      throw Exception('Failed to load calorie diary');
+    }
   }
 
   @override
@@ -40,32 +45,48 @@ class _CalorieDiaryPageState extends State<CalorieDiaryPageGenerator> {
             const SizedBox(height: 30.0),
             CustomCalendar(
               onDaySelected: (selectedDay, focusedDay) {
-                setState(() {});
+                String formattedDate =
+                    selectedDay.toIso8601String().split('T')[0];
+                print(
+                    'appState.userId.toString() is ${appState.userId.toString()}');
+                print('formatted Date is ${formattedDate}');
+
+                fetchCalorieDiary(appState.userId.toString(), formattedDate);
               },
             ),
             const SizedBox(height: 60.0),
             CustomExpandingWidgetVer3(
-                listTitle: 'Breakfast', units: 'Calories', pairList: itemList),
+                listTitle: 'Breakfast',
+                units: 'Calories',
+                pairList: _getItemList('breakfast')),
             const SizedBox(
               height: 20,
             ),
             CustomExpandingWidgetVer3(
-                listTitle: 'Snack', units: 'Calories', pairList: itemList),
+                listTitle: 'Snack 1',
+                units: 'Calories',
+                pairList: _getItemList('snack1')),
             const SizedBox(
               height: 20,
             ),
             CustomExpandingWidgetVer3(
-                listTitle: 'Lunch', units: 'Calories', pairList: itemList),
+                listTitle: 'Lunch',
+                units: 'Calories',
+                pairList: _getItemList('lunch')),
             const SizedBox(
               height: 20,
             ),
             CustomExpandingWidgetVer3(
-                listTitle: 'Snack', units: 'Calories', pairList: itemList),
+                listTitle: 'Snack 2',
+                units: 'Calories',
+                pairList: _getItemList('snack2')),
             const SizedBox(
               height: 20,
             ),
             CustomExpandingWidgetVer3(
-                listTitle: 'Dinner', units: 'Calories', pairList: itemList),
+                listTitle: 'Dinner',
+                units: 'Calories',
+                pairList: _getItemList('dinner')),
             const SizedBox(
               height: 20,
             ),
@@ -73,5 +94,18 @@ class _CalorieDiaryPageState extends State<CalorieDiaryPageGenerator> {
         ),
       ),
     );
+  }
+
+  Set<Map<String, double>> _getItemList(String mealType) {
+    if (mealPlan.isEmpty || !mealPlan.containsKey(mealType)) {
+      return {};
+    }
+
+    var itemList = mealPlan[mealType].map<Map<String, double>>((item) {
+      return {item['name']: item['calories'].toDouble()};
+    }).toSet();
+
+    print('Item list for $mealType: $itemList');
+    return itemList;
   }
 }
