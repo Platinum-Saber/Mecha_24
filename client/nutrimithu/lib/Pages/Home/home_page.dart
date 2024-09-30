@@ -376,7 +376,7 @@ class PackMyMealPageGenerator extends StatefulWidget {
 
 class PackMyMealPageState extends State<PackMyMealPageGenerator> {
   bool _isEditing = false;
-  final bool _isNutriScale = false;
+  // final bool _isNutriScale = false;
 
   @override
   Widget build(BuildContext context) {
@@ -521,7 +521,8 @@ class PackMyMealPageState extends State<PackMyMealPageGenerator> {
     return Center(
       child: TextButton(
         onPressed: () {
-          apps.mealsCompleted[apps.mealIndex] = true;
+          apps.mealsCompleted[apps.mealIndex] =
+              true; //meals completed not mentioned in appstate
           Navigator.pop(context);
         },
         style: TextButton.styleFrom(
