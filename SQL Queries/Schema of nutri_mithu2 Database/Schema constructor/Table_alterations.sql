@@ -37,3 +37,5 @@ ALTER TABLE `calorie_diary`
 DROP FOREIGN KEY `calorie_diary_ibfk_2`;
 
 TRUNCATE TABLE `calorie_diary`;
+
+SHOW TRIGGERS;
